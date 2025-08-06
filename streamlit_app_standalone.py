@@ -242,6 +242,29 @@ class FreeEmbeddingService:
             st.error(f"Error generating embeddings: {e}")
             return [[0.0] * self.dimension for _ in texts]
     
+    def get_job_and_candidate_embeddings(self, job_text: str, candidate_texts: List[str]) -> tuple[List[float], List[List[float]]]:
+        """
+        Get embeddings for job and candidates together (required for TF-IDF).
+        This ensures they're in the same vector space.
+        """
+        try:
+            # Combine job + candidates for fitting
+            all_texts = [job_text] + candidate_texts
+            all_embeddings = self.get_embeddings_batch(all_texts)
+            
+            # Split back into job and candidates
+            job_embedding = all_embeddings[0]
+            candidate_embeddings = all_embeddings[1:]
+            
+            return job_embedding, candidate_embeddings
+            
+        except Exception as e:
+            st.error(f"Error generating embeddings: {e}")
+            # Fallback to simple method
+            job_embedding = [0.1] * self.dimension  # Small positive values
+            candidate_embeddings = [[0.1] * self.dimension for _ in candidate_texts]
+            return job_embedding, candidate_embeddings
+
     def get_info(self) -> dict:
         return {
             "method": "TF-IDF + N-grams",
@@ -686,14 +709,22 @@ def main():
                 # Generate embeddings
                 progress_bar = st.progress(0)
                 
-                # Job embedding
+                # Generate embeddings
                 progress_bar.progress(10)
-                job_embedding = embedding_service.get_embedding(job_text)
-                
-                # Candidate embeddings
-                progress_bar.progress(30)
                 candidate_texts = [c['resume_text'] for c in candidates]
-                candidate_embeddings = embedding_service.get_embeddings_batch(candidate_texts)
+                
+                # For free mode, use special method that fits TF-IDF on all texts together
+                if not use_openai and hasattr(embedding_service, 'get_job_and_candidate_embeddings'):
+                    progress_bar.progress(20)
+                    job_embedding, candidate_embeddings = embedding_service.get_job_and_candidate_embeddings(
+                        job_text, candidate_texts
+                    )
+                else:
+                    # OpenAI mode - get embeddings separately
+                    progress_bar.progress(15)
+                    job_embedding = embedding_service.get_embedding(job_text)
+                    progress_bar.progress(25)
+                    candidate_embeddings = embedding_service.get_embeddings_batch(candidate_texts)
                 
                 # Compute similarities
                 progress_bar.progress(60)

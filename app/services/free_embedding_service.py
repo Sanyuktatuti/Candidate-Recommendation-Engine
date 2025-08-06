@@ -97,21 +97,17 @@ class FreeEmbeddingService:
                 return embedding.tolist()
                 
             elif self.method == "tfidf":
-                # For single text with TF-IDF, we need to fit or use pre-fitted
-                if not hasattr(self.vectorizer, 'vocabulary_'):
-                    # If not fitted, return zero vector (will be handled in batch)
-                    return [0.0] * self.dimension
-                
-                tfidf_matrix = self.vectorizer.transform([cleaned_text])
-                dense_vector = tfidf_matrix.toarray()[0]
-                return dense_vector.tolist()
+                # For single text with TF-IDF, use simple method as fallback
+                # since TF-IDF works best with batch processing
+                logger.warning("TF-IDF single embedding called - using simple method fallback")
+                return self._simple_text_embedding(cleaned_text)
                 
             else:  # simple method
                 return self._simple_text_embedding(cleaned_text)
                 
         except Exception as e:
             logger.error(f"Error generating embedding: {e}")
-            return [0.0] * self.dimension
+            return self._simple_text_embedding(text)  # Use simple method as fallback
     
     def get_embeddings_batch(self, texts: List[str]) -> List[List[float]]:
         """Get embeddings for multiple texts."""
@@ -134,6 +130,36 @@ class FreeEmbeddingService:
         except Exception as e:
             logger.error(f"Error generating batch embeddings: {e}")
             return [[0.0] * self.dimension for _ in texts]
+    
+    def get_job_and_candidate_embeddings(self, job_text: str, candidate_texts: List[str]) -> tuple[List[float], List[List[float]]]:
+        """
+        Get embeddings for job and candidates together (required for TF-IDF).
+        This ensures they're in the same vector space.
+        
+        Args:
+            job_text: The job description text
+            candidate_texts: List of candidate resume texts
+            
+        Returns:
+            Tuple of (job_embedding, candidate_embeddings)
+        """
+        try:
+            # Combine job + candidates for fitting
+            all_texts = [job_text] + candidate_texts
+            all_embeddings = self.get_embeddings_batch(all_texts)
+            
+            # Split back into job and candidates
+            job_embedding = all_embeddings[0]
+            candidate_embeddings = all_embeddings[1:]
+            
+            return job_embedding, candidate_embeddings
+            
+        except Exception as e:
+            logger.error(f"Error generating job and candidate embeddings: {e}")
+            # Fallback to simple method
+            job_embedding = self._simple_text_embedding(job_text)
+            candidate_embeddings = [self._simple_text_embedding(text) for text in candidate_texts]
+            return job_embedding, candidate_embeddings
     
     def _preprocess_text(self, text: str) -> str:
         """Preprocess text before embedding."""

@@ -35,25 +35,72 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS
+# Custom CSS for professional UI
 st.markdown("""
 <style>
+    /* Main header styling */
     .main-header {
-        font-size: 2.5rem;
-        font-weight: 700;
-        color: #1f77b4;
+        font-size: 2.8rem;
+        font-weight: 300;
+        color: #2C3E50;
         text-align: center;
-        margin-bottom: 2rem;
+        margin-bottom: 3rem;
+        letter-spacing: -0.5px;
+        border-bottom: 3px solid #3498DB;
+        padding-bottom: 1rem;
     }
-    .similarity-score {
-        font-size: 1.2rem;
-        font-weight: bold;
-        color: #2e8b57;
+    
+    /* Step indicator */
+    .step-indicator {
+        background: #E8F4FD;
+        border: 1px solid #D6EAF8;
+        border-radius: 8px;
+        padding: 1rem;
+        margin: 1rem 0;
+        color: #2980B9;
+        font-weight: 500;
+        text-align: center;
     }
-    .candidate-name {
-        font-size: 1.1rem;
+    
+    /* Clean section headers */
+    .clean-header {
+        font-size: 1.6rem;
         font-weight: 600;
-        color: #333;
+        color: #2C3E50;
+        margin: 2rem 0 1rem 0;
+        padding: 1rem;
+        background: linear-gradient(135deg, #F8F9FA 0%, #E9ECEF 100%);
+        border-left: 4px solid #3498DB;
+        border-radius: 0 8px 8px 0;
+    }
+    
+    /* Similarity score styling */
+    .similarity-score {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #27AE60;
+        background: linear-gradient(135deg, #D5F4E6, #FDEEF4);
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        display: inline-block;
+    }
+    
+    /* Candidate name styling */
+    .candidate-name {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #2C3E50;
+        margin-bottom: 0.8rem;
+        border-bottom: 2px solid #ECF0F1;
+        padding-bottom: 0.5rem;
+    }
+    
+    /* Main container */
+    .main .block-container {
+        max-width: 1200px;
+        padding-top: 2rem;
+        padding-left: 2rem;
+        padding-right: 2rem;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -465,35 +512,104 @@ def main():
         include_summary = st.checkbox("Include AI summaries", value=True)
     
     # Job Description
-    st.header("Job Description")
+    st.markdown('<div class="clean-header">Step 1: Job Description</div>', unsafe_allow_html=True)
     
-    col1, col2 = st.columns([2, 1])
+    # Full width job title
+    job_title = st.text_input(
+        "Job Title", 
+        placeholder="e.g., Senior Software Engineer",
+        help="Enter the position title for the role you're hiring for"
+    )
+    
+    # Job description and requirements in aligned columns (75% / 25%)
+    col1, col2 = st.columns([3, 1])
     
     with col1:
-        job_title = st.text_input("Job Title", placeholder="e.g., Senior Software Engineer")
         job_description = st.text_area(
             "Job Description",
-            height=150,
-            placeholder="Describe the role, responsibilities, and what you're looking for..."
+            height=200,
+            placeholder="Describe the role, responsibilities, required skills, and qualifications in detail...",
+            help="Provide a comprehensive description of the position including key responsibilities, required skills, and desired qualifications"
         )
     
     with col2:
         job_requirements = st.text_area(
-            "Requirements (Optional)",
-            height=150,
-            placeholder="Specific skills, experience, or qualifications required..."
+            "Additional Requirements",
+            height=200,
+            placeholder="Specific skills, experience, or qualifications...",
+            help="Optional: Add any specific requirements, certifications, or preferred qualifications"
         )
     
-    # Input validation
-    if not job_title or not job_description:
-        st.warning("Please provide both job title and description to proceed.")
-        return
+    # Progress indicator and validation
+    job_complete = bool(job_description.strip() and job_title.strip())
+    
+    # Add some spacing
+    st.markdown("<br>", unsafe_allow_html=True)
+    
+    if job_complete:
+        # Success indicator
+        st.markdown("""
+        <div style="background: linear-gradient(135deg, #D5F4E6 0%, #B8E6C1 100%); 
+                    border: 2px solid #27AE60; 
+                    border-radius: 12px; 
+                    padding: 1.5rem; 
+                    margin: 1.5rem 0; 
+                    color: #1E8449;
+                    box-shadow: 0 4px 8px rgba(39, 174, 96, 0.2);">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <div style="width: 20px; height: 20px; background: #27AE60; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 12px;">✓</div>
+                <strong style="font-size: 1.1rem;">Job details completed successfully!</strong>
+            </div>
+            <div style="margin-top: 0.5rem; opacity: 0.8;">Ready to proceed to candidate upload section</div>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        # Prominent continue button
+        col_left, col_center, col_right = st.columns([1, 2, 1])
+        with col_center:
+            continue_clicked = st.button(
+                "Continue to Candidate Upload →", 
+                key="proceed_button",
+                help="Click to proceed to the candidate upload section",
+                type="primary",
+                use_container_width=True
+            )
+        
+        # Only show upload section if continue button is clicked or if we're in session state
+        if continue_clicked:
+            st.session_state.show_upload_section = True
+            
+        if not st.session_state.get('show_upload_section', False):
+            st.stop()  # Don't show anything below until button is clicked
+            
+    else:
+        # Warning indicator with better styling
+        st.markdown("""
+        <div style="background: linear-gradient(135deg, #FEF9E7 0%, #FDF2C4 100%); 
+                    border: 2px solid #F39C12; 
+                    border-radius: 12px; 
+                    padding: 1.5rem; 
+                    margin: 1.5rem 0; 
+                    color: #D68910;
+                    box-shadow: 0 4px 8px rgba(243, 156, 18, 0.2);">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <div style="width: 20px; height: 20px; background: #F39C12; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 12px;">!</div>
+                <strong style="font-size: 1.1rem;">Please complete the job information above</strong>
+            </div>
+            <div style="margin-top: 0.5rem; opacity: 0.8;">Both job title and description are required to proceed</div>
+        </div>
+        """, unsafe_allow_html=True)
+        st.stop()  # Don't show anything below until requirements are met
+    
+    # Add section break
+    st.markdown("<br><br>", unsafe_allow_html=True)
     
     # Method-specific input
     candidates = []
     
     if method == "File Upload":
-        st.header("📁 Upload Candidate Resumes")
+        st.markdown('<div class="clean-header">Step 2: Upload Candidate Resumes</div>', unsafe_allow_html=True)
+        st.markdown('<div class="step-indicator">Upload resume files to find the best matching candidates</div>', unsafe_allow_html=True)
         
         uploaded_files = st.file_uploader(
             "Choose resume files",
@@ -524,7 +640,8 @@ def main():
                     })
     
     else:  # Text Input
-        st.header("✏️ Enter Candidate Information")
+        st.markdown('<div class="clean-header">Step 2: Enter Candidate Information</div>', unsafe_allow_html=True)
+        st.markdown('<div class="step-indicator">Manually enter candidate names and resume content</div>', unsafe_allow_html=True)
         
         # Dynamic candidate input
         if "candidates_text" not in st.session_state:

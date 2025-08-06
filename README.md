@@ -141,16 +141,16 @@ DEBUG=True
 - **Requirements**: `pip install sentence-transformers`
 - **Best For**: Users wanting quality without API costs
 
-##  Recommendation: Use OpenAI for Best Results
+## Recommendation: Use OpenAI for Best Results
 
 **For professional HR and recruiting use, we strongly recommend using OpenAI:**
 
-| OpenAI Mode                                | Free Mode                     |
-| ------------------------------------------ | ----------------------------- |
-|  Superior semantic understanding |  Basic keyword matching |
-|  Human-like candidate summaries          |  Template-based summaries   |
-|  Production-ready accuracy               |  Good for testing/demos     |
-|  ~$2 per 100 candidates                  |  $0 cost                    |
+| OpenAI Mode                     | Free Mode                |
+| ------------------------------- | ------------------------ |
+| Superior semantic understanding | Basic keyword matching   |
+| Human-like candidate summaries  | Template-based summaries |
+| Production-ready accuracy       | Good for testing/demos   |
+| ~$2 per 100 candidates          | $0 cost                  |
 
 **Bottom Line**: The quality difference is significant, and the cost is minimal for professional use.
 
@@ -210,7 +210,7 @@ docker-compose up -d
 - **API Documentation**: http://localhost:8000/docs
 - **Health Check**: http://localhost:8000/health
 
-##  Management Scripts
+## Management Scripts
 
 The application includes convenient management scripts for easy operation:
 
@@ -253,7 +253,7 @@ tail -f api.log
 tail -f streamlit.log
 ```
 
-##  Usage Guide
+## Usage Guide
 
 ### Using the Web Interface
 
@@ -301,7 +301,7 @@ curl -X POST "http://localhost:8000/upload-search" \
   -F "files=@resume2.docx"
 ```
 
-##  Configuration
+## Configuration
 
 Key settings in `config.py`:
 
@@ -320,7 +320,7 @@ RATE_LIMIT_REQUESTS = 100                  # Requests per hour
 MAX_SUMMARY_LENGTH = 200                   # AI summary max length
 ```
 
-##  How It Works
+## How It Works
 
 ### 1. Text Processing
 
@@ -346,7 +346,7 @@ MAX_SUMMARY_LENGTH = 200                   # AI summary max length
 - Contextual summaries highlighting relevant skills
 - Professional tone suitable for hiring managers
 
-##  Development
+## Development
 
 ### Project Structure
 
@@ -440,7 +440,7 @@ RATE_LIMIT_REQUESTS=1000
 - Rate limiting on API endpoints
 - CORS configuration for frontend access
 
-##  Troubleshooting
+## Troubleshooting
 
 ### Common Issues
 
@@ -487,7 +487,7 @@ tail -f streamlit.log
 - Consider caching for repeated queries
 - Monitor API rate limits
 
-##  Performance Metrics
+## Performance Metrics
 
 **OpenAI Mode Performance** ( recommended):
 
@@ -516,7 +516,7 @@ tail -f streamlit.log
 4. Push to branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-##  License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 

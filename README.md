@@ -2,6 +2,37 @@
 
 An AI-powered web application that matches the best candidates to job descriptions using semantic similarity and machine learning.
 
+## 🚀 **Try It Now - Live Demo**
+
+**🌐 Access the app instantly:** https://candidate-recommendation-engine-ks3gdxgzcjfto3624t55v2.streamlit.app/
+
+### **📋 How to Use:**
+
+1. **🔑 Choose AI Service:**
+
+   - **🚀 OpenAI (Recommended)**: Enter your OpenAI API key for best quality
+   - **🆓 Free Mode**: No setup needed - works immediately
+
+2. **📝 Enter Job Details:**
+
+   - Job title and detailed job description
+   - Requirements and preferred skills
+
+3. **📤 Upload Resumes:**
+
+   - Upload multiple PDF, DOCX, or TXT files
+   - Or paste resume text directly
+
+4. **⚡ Get Results:**
+
+   - View ranked candidates with similarity scores
+   - Read AI-generated fit summaries
+   - Analyze charts and detailed breakdowns
+
+5. **💡 Pro Tip:** For professional recruiting, use OpenAI mode (~$0.002/candidate) for significantly better semantic understanding and summaries.
+
+---
+
 > **⭐ RECOMMENDATION**: For professional use, we highly recommend using **OpenAI API** for superior quality results. The app also includes free alternatives for testing and budget-conscious scenarios.
 
 ## ✨ Features
@@ -46,7 +77,7 @@ An AI-powered web application that matches the best candidates to job descriptio
 ### Prerequisites
 
 - Python 3.11+
-- Docker & Docker Compose (for containerized deployment) 
+- Docker & Docker Compose (for containerized deployment)
 - **Optional**: OpenAI API key (for best quality) or use free mode
 
 ### 1. Clone & Setup
@@ -76,14 +107,16 @@ DEBUG=True
 ## 🤖 AI Service Options
 
 ### **🚀 OpenAI Mode (⭐ Highly Recommended)**
+
 - **Cost**: ~$0.002 per candidate analysis (~$2 for 100 candidates)
-- **Technology**: OpenAI embeddings + GPT summaries  
+- **Technology**: OpenAI embeddings + GPT summaries
 - **Quality**: ⭐⭐⭐⭐⭐ Excellent semantic understanding
 - **Speed**: Moderate (API calls)
 - **Requirements**: OpenAI API key
 - **Best For**: Professional HR use, production environments, high-quality results
 
 > **💡 Why We Recommend OpenAI:**
+>
 > - **Superior Accuracy**: Industry-leading semantic understanding
 > - **Professional Summaries**: Human-like analysis of candidate fit
 > - **Proven in Production**: Trusted by Fortune 500 companies
@@ -91,6 +124,7 @@ DEBUG=True
 > - **Continuous Improvement**: Benefits from OpenAI's latest models
 
 ### **🆓 Free Mode (Good Alternative)**
+
 - **Cost**: $0 forever
 - **Technology**: TF-IDF vectorization + keyword matching
 - **Quality**: ⭐⭐⭐ Good for basic screening
@@ -99,6 +133,7 @@ DEBUG=True
 - **Best For**: Testing, demos, budget-conscious scenarios
 
 ### **🔬 Advanced Free (Optional)**
+
 - **Cost**: $0 (but requires ~500MB download)
 - **Technology**: SentenceTransformers + local models
 - **Quality**: ⭐⭐⭐⭐ Very good semantic understanding
@@ -110,12 +145,12 @@ DEBUG=True
 
 **For professional HR and recruiting use, we strongly recommend using OpenAI:**
 
-| OpenAI Mode | Free Mode |
-|-------------|-----------|
+| OpenAI Mode                                | Free Mode                     |
+| ------------------------------------------ | ----------------------------- |
 | ⭐⭐⭐⭐⭐ Superior semantic understanding | ⭐⭐⭐ Basic keyword matching |
-| 🎯 Human-like candidate summaries | 📋 Template-based summaries |
-| 🚀 Production-ready accuracy | 🧪 Good for testing/demos |
-| 💰 ~$2 per 100 candidates | 🆓 $0 cost |
+| 🎯 Human-like candidate summaries          | 📋 Template-based summaries   |
+| 🚀 Production-ready accuracy               | 🧪 Good for testing/demos     |
+| 💰 ~$2 per 100 candidates                  | 🆓 $0 cost                    |
 
 **Bottom Line**: The quality difference is significant, and the cost is minimal for professional use.
 

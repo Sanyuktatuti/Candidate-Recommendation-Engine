@@ -1,44 +1,44 @@
-# 🎯 Candidate Recommendation Engine
+# Candidate Recommendation Engine
 
 An AI-powered web application that matches the best candidates to job descriptions using semantic similarity and machine learning.
 
-## 🚀 **Try It Now - Live Demo**
+## **Try It Now - Live Demo**
 
-**🌐 Access the app instantly:** https://candidate-recommendation-engine-ks3gdxgzcjfto3624t55v2.streamlit.app/
+**Access the app instantly:** https://candidate-recommendation-engine-ks3gdxgzcjfto3624t55v2.streamlit.app/
 
-### **📋 How to Use:**
+### **How to Use:**
 
-1. **🔑 Choose AI Service:**
+1. **Choose AI Service:**
 
-   - **🚀 OpenAI (Recommended)**: Enter your OpenAI API key for best quality
-   - **🆓 Free Mode**: No setup needed - works immediately
+   - **OpenAI (Recommended)**: Enter your OpenAI API key for best quality
+   - **Free Mode**: No setup needed - works immediately
 
-2. **📝 Enter Job Details:**
+2. **Enter Job Details:**
 
    - Job title and detailed job description
    - Requirements and preferred skills
 
-3. **📤 Upload Resumes:**
+3. **Upload Resumes:**
 
    - Upload multiple PDF, DOCX, or TXT files
    - Or paste resume text directly
 
-4. **⚡ Get Results:**
+4. **Get Results:**
 
    - View ranked candidates with similarity scores
    - Read AI-generated fit summaries
    - Analyze charts and detailed breakdowns
 
-5. **💡 Pro Tip:** For professional recruiting, use OpenAI mode (~$0.002/candidate) for significantly better semantic understanding and summaries.
+5. **Pro Tip:** For professional recruiting, use OpenAI mode (~$0.002/candidate) for significantly better semantic understanding and summaries.
 
 ---
 
-> **⭐ RECOMMENDATION**: For professional use, we highly recommend using **OpenAI API** for superior quality results. The app also includes free alternatives for testing and budget-conscious scenarios.
+> **RECOMMENDATION**: For professional use, we highly recommend using **OpenAI API** for superior quality results. The app also includes free alternatives for testing and budget-conscious scenarios.
 
-## ✨ Features
+## Features
 
 - **Smart Matching**: Uses AI embeddings and cosine similarity for semantic job-candidate matching
-- **OpenAI Integration**: ⭐ Recommended - Industry-leading semantic understanding and professional summaries
+- **OpenAI Integration**: Recommended - Industry-leading semantic understanding and professional summaries
 - **Free Fallback Options**: Works without API key using TF-IDF and keyword matching
 - **Multiple Input Methods**: Upload resume files (PDF/DOCX/TXT) or paste text directly
 - **AI-Powered Insights**: Generated summaries explaining why each candidate is a great fit
@@ -46,7 +46,7 @@ An AI-powered web application that matches the best candidates to job descriptio
 - **Production Ready**: FastAPI backend with Docker deployment, health checks, and monitoring
 - **Scalable Architecture**: Modular design with FAISS vector search and async processing
 
-## 🏗️ Architecture
+## Architecture
 
 ```
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
@@ -72,7 +72,7 @@ An AI-powered web application that matches the best candidates to job descriptio
 - **Deployment**: Docker, Docker Compose, Nginx
 - **Data**: In-memory vector store (easily extensible to PostgreSQL + pgvector)
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 
@@ -102,20 +102,20 @@ OPENAI_API_KEY=your_openai_api_key_here  # Highly recommended for best quality
 DEBUG=True
 ```
 
-> **💡 Pro Tip**: Get your OpenAI API key at [platform.openai.com/api-keys](https://platform.openai.com/api-keys). The cost is minimal (~$2 for 100 candidate analyses) but the quality improvement is significant!
+> **Pro Tip**: Get your OpenAI API key at [platform.openai.com/api-keys](https://platform.openai.com/api-keys). The cost is minimal (~$2 for 100 candidate analyses) but the quality improvement is significant!
 
-## 🤖 AI Service Options
+## AI Service Options
 
-### **🚀 OpenAI Mode (⭐ Highly Recommended)**
+### **OpenAI Mode (Highly Recommended)**
 
 - **Cost**: ~$0.002 per candidate analysis (~$2 for 100 candidates)
 - **Technology**: OpenAI embeddings + GPT summaries
-- **Quality**: ⭐⭐⭐⭐⭐ Excellent semantic understanding
+- **Quality**: Excellent semantic understanding
 - **Speed**: Moderate (API calls)
 - **Requirements**: OpenAI API key
 - **Best For**: Professional HR use, production environments, high-quality results
 
-> **💡 Why We Recommend OpenAI:**
+> **Why We Recommend OpenAI:**
 >
 > - **Superior Accuracy**: Industry-leading semantic understanding
 > - **Professional Summaries**: Human-like analysis of candidate fit
@@ -123,40 +123,40 @@ DEBUG=True
 > - **Cost-Effective**: Excellent ROI for hiring decisions
 > - **Continuous Improvement**: Benefits from OpenAI's latest models
 
-### **🆓 Free Mode (Good Alternative)**
+### **Free Mode (Good Alternative)**
 
 - **Cost**: $0 forever
 - **Technology**: TF-IDF vectorization + keyword matching
-- **Quality**: ⭐⭐⭐ Good for basic screening
+- **Quality**: Good for basic screening
 - **Speed**: Very fast
 - **Requirements**: None
 - **Best For**: Testing, demos, budget-conscious scenarios
 
-### **🔬 Advanced Free (Optional)**
+### **Advanced Free (Optional)**
 
 - **Cost**: $0 (but requires ~500MB download)
 - **Technology**: SentenceTransformers + local models
-- **Quality**: ⭐⭐⭐⭐ Very good semantic understanding
+- **Quality**: Very good semantic understanding
 - **Speed**: Fast after initial setup
 - **Requirements**: `pip install sentence-transformers`
 - **Best For**: Users wanting quality without API costs
 
-## 💡 Recommendation: Use OpenAI for Best Results
+##  Recommendation: Use OpenAI for Best Results
 
 **For professional HR and recruiting use, we strongly recommend using OpenAI:**
 
 | OpenAI Mode                                | Free Mode                     |
 | ------------------------------------------ | ----------------------------- |
-| ⭐⭐⭐⭐⭐ Superior semantic understanding | ⭐⭐⭐ Basic keyword matching |
-| 🎯 Human-like candidate summaries          | 📋 Template-based summaries   |
-| 🚀 Production-ready accuracy               | 🧪 Good for testing/demos     |
-| 💰 ~$2 per 100 candidates                  | 🆓 $0 cost                    |
+|  Superior semantic understanding |  Basic keyword matching |
+|  Human-like candidate summaries          |  Template-based summaries   |
+|  Production-ready accuracy               |  Good for testing/demos     |
+|  ~$2 per 100 candidates                  |  $0 cost                    |
 
 **Bottom Line**: The quality difference is significant, and the cost is minimal for professional use.
 
 ### 3. Run the Application
 
-**🚀 Option A: One-Command Launch (Recommended)**
+**Option A: One-Command Launch (Recommended)**
 
 ```bash
 # Start both servers automatically
@@ -169,7 +169,7 @@ DEBUG=True
 ./stop.sh
 ```
 
-**📊 Check Status**
+** Check Status**
 
 ```bash
 ./status.sh
@@ -210,7 +210,7 @@ docker-compose up -d
 - **API Documentation**: http://localhost:8000/docs
 - **Health Check**: http://localhost:8000/health
 
-## 🛠️ Management Scripts
+##  Management Scripts
 
 The application includes convenient management scripts for easy operation:
 
@@ -253,7 +253,7 @@ tail -f api.log
 tail -f streamlit.log
 ```
 
-## 💻 Usage Guide
+##  Usage Guide
 
 ### Using the Web Interface
 
@@ -301,7 +301,7 @@ curl -X POST "http://localhost:8000/upload-search" \
   -F "files=@resume2.docx"
 ```
 
-## 🔧 Configuration
+##  Configuration
 
 Key settings in `config.py`:
 
@@ -320,7 +320,7 @@ RATE_LIMIT_REQUESTS = 100                  # Requests per hour
 MAX_SUMMARY_LENGTH = 200                   # AI summary max length
 ```
 
-## 📊 How It Works
+##  How It Works
 
 ### 1. Text Processing
 
@@ -346,7 +346,7 @@ MAX_SUMMARY_LENGTH = 200                   # AI summary max length
 - Contextual summaries highlighting relevant skills
 - Professional tone suitable for hiring managers
 
-## 🛠️ Development
+##  Development
 
 ### Project Structure
 
@@ -363,9 +363,9 @@ candidate-recommendation-engine/
 ├── scripts/
 │   ├── dev.py               # Development server
 │   └── deploy.sh            # Deployment script
-├── run.sh                   # 🚀 One-command launcher
+├── run.sh                   #  One-command launcher
 ├── stop.sh                  # 🛑 Stop all services
-├── status.sh                # 📊 Check service status
+├── status.sh                #  Check service status
 ├── test_setup.py            # Setup validation
 ├── streamlit_app.py         # Frontend application
 ├── config.py                # Configuration
@@ -440,7 +440,7 @@ RATE_LIMIT_REQUESTS=1000
 - Rate limiting on API endpoints
 - CORS configuration for frontend access
 
-## 🔍 Troubleshooting
+##  Troubleshooting
 
 ### Common Issues
 
@@ -487,16 +487,16 @@ tail -f streamlit.log
 - Consider caching for repeated queries
 - Monitor API rate limits
 
-## 📈 Performance Metrics
+##  Performance Metrics
 
-**OpenAI Mode Performance** (⭐ recommended):
+**OpenAI Mode Performance** ( recommended):
 
 - **Total Processing Time**: 8.82 seconds for 3 candidates (2.94s per candidate)
 - **Embedding Generation**: ~100ms per candidate
 - **Similarity Search**: <10ms for 1000 candidates (FAISS)
 - **AI Summary Generation**: ~500ms per candidate (professional quality)
 - **File Processing**: ~200ms per PDF page
-- **Quality**: ⭐⭐⭐⭐⭐ Professional-grade semantic understanding
+- **Quality**: Professional-grade semantic understanding
 
 **Free Mode Performance** (alternative):
 
@@ -504,7 +504,7 @@ tail -f streamlit.log
 - **Embedding Generation**: ~50ms per candidate (TF-IDF)
 - **Similarity Search**: <5ms for 100 candidates
 - **Summary Generation**: ~10ms per candidate (template-based)
-- **Quality**: ⭐⭐⭐ Good for basic screening
+- **Quality**: Good for basic screening
 - **Document Upload**: Supports multiple PDF/DOCX/TXT files simultaneously
 - **Similarity Scores**: Range from 0-100% with detailed explanations
 
@@ -516,7 +516,7 @@ tail -f streamlit.log
 4. Push to branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## 📄 License
+##  License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 

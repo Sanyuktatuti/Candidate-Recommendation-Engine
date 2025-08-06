@@ -31,7 +31,6 @@ from sklearn.metrics.pairwise import cosine_similarity
 # Set page config
 st.set_page_config(
     page_title="Candidate Recommendation Engine",
-    page_icon="🎯",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -520,7 +519,7 @@ def display_results(job_description: Dict, candidates: List[Dict], similarities:
     # Sort by similarity score
     results.sort(key=lambda x: x['similarity'], reverse=True)
     
-    st.success(f"✅ Processed {len(candidates)} candidates")
+    st.success(f"Processed {len(candidates)} candidates")
     
     if not results:
         st.warning("No matching candidates found.")
@@ -671,7 +670,7 @@ def main():
         if not api_key:
             st.warning("⚠️ Please enter your OpenAI API key in the sidebar to use the recommended OpenAI service.")
             st.info("""
-            **💡 Why OpenAI is Recommended:**
+            **Why OpenAI is Recommended:**
             - **Superior Quality**: Best-in-class semantic understanding
             - **Professional Summaries**: Human-like analysis of candidate fit
             - **Proven Accuracy**: Industry-leading AI for HR applications
@@ -681,7 +680,7 @@ def main():
             1. Get an OpenAI API key from https://platform.openai.com/api-keys
             2. Enter it in the sidebar above
             
-            **💡 Alternative**: Switch to "Free Mode" above if you prefer no-cost operation (good quality, but not as sophisticated)
+            **Alternative**: Switch to "Free Mode" above if you prefer no-cost operation (good quality, but not as sophisticated)
             """)
             return
     else:
@@ -710,17 +709,17 @@ def main():
         if use_openai:
             embedding_service = EmbeddingService(api_key)
             ai_service = AIService(api_key)
-            st.sidebar.success("✅ OpenAI connection ready!")
+            st.sidebar.success("OpenAI connection ready!")
         else:
             # Use free services
             embedding_service = FreeEmbeddingService()
             ai_service = FreeAIService()
-            st.sidebar.success("✅ Free AI services ready!")
+            st.sidebar.success("Free AI services ready!")
     except Exception as e:
         if use_openai:
-            st.sidebar.error(f"❌ OpenAI connection failed: {e}")
+            st.sidebar.error(f"OpenAI connection failed: {e}")
         else:
-            st.sidebar.error(f"❌ Free services failed: {e}")
+            st.sidebar.error(f"Free services failed: {e}")
         return
     
     # Sidebar settings
@@ -763,7 +762,7 @@ def main():
     if job_complete:
         st.markdown("""
         <div style="background: #D5F4E6; border: 1px solid #27AE60; border-radius: 8px; padding: 1rem; margin: 1rem 0; color: #1E8449;">
-            <strong>✓ Job description complete</strong> - Ready to proceed to candidate upload
+            <strong>Job description complete</strong> - Ready to proceed to candidate upload
         </div>
         """, unsafe_allow_html=True)
         
@@ -857,7 +856,7 @@ def main():
     
     # Process candidates
     if candidates:
-        st.info(f"✅ {len(candidates)} candidates ready for analysis")
+        st.info(f"{len(candidates)} candidates ready for analysis")
         
         if st.button("Analyze Candidates", type="primary"):
             with st.spinner("Generating embeddings and computing similarities..."):
@@ -919,13 +918,13 @@ def main():
                 display_results(job_desc, candidates, similarities, summaries)
                 
                 # Show processing time
-                st.success(f"⚡ Processing completed in {processing_time:.2f} seconds")
+                st.success(f"Processing completed in {processing_time:.2f} seconds")
     
     else:
-        if method == "📁 File Upload":
-            st.info("👆 Please upload resume files using the file uploader above")
+        if method == "File Upload":
+            st.info("Please upload resume files using the file uploader above")
         else:
-            st.info("👆 Please add at least one candidate with both name and resume content")
+            st.info("Please add at least one candidate with both name and resume content")
 
 if __name__ == "__main__":
     main()

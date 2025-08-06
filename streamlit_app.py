@@ -31,7 +31,6 @@ from sklearn.metrics.pairwise import cosine_similarity
 # Set page config
 st.set_page_config(
     page_title="Candidate Recommendation Engine",
-    page_icon="🎯",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -254,7 +253,7 @@ def display_results(job_description: Dict, candidates: List[Dict], similarities:
     # Sort by similarity score
     results.sort(key=lambda x: x['similarity'], reverse=True)
     
-    st.success(f"✅ Processed {len(candidates)} candidates")
+    st.success(f"Processed {len(candidates)} candidates")
     
     if not results:
         st.warning("No matching candidates found.")
@@ -382,12 +381,12 @@ def main():
     st.markdown('<div class="main-header">Candidate Recommendation Engine</div>', unsafe_allow_html=True)
     
     # Configuration options
-    st.sidebar.header("🔑 Configuration")
+    st.sidebar.header("Configuration")
     
     # Choose AI service
     ai_service_option = st.sidebar.selectbox(
         "AI Service",
-        ["🚀 OpenAI (Recommended - Best Quality)", "🆓 Free Mode (Good Alternative)"],
+        ["OpenAI (Recommended - Best Quality)", "Free Mode (Good Alternative)"],
         help="OpenAI provides superior semantic understanding and professional summaries. Free mode is a solid backup option."
     )
     
@@ -404,7 +403,7 @@ def main():
         if not api_key:
             st.warning("⚠️ Please enter your OpenAI API key in the sidebar to use the recommended OpenAI service.")
             st.info("""
-            **💡 Why OpenAI is Recommended:**
+            **Why OpenAI is Recommended:**
             - **Superior Quality**: Best-in-class semantic understanding
             - **Professional Summaries**: Human-like analysis of candidate fit
             - **Proven Accuracy**: Industry-leading AI for HR applications
@@ -414,12 +413,12 @@ def main():
             1. Get an OpenAI API key from https://platform.openai.com/api-keys
             2. Enter it in the sidebar above
             
-            **💡 Alternative**: Switch to "Free Mode" above if you prefer no-cost operation (good quality, but not as sophisticated)
+            **Alternative**: Switch to "Free Mode" above if you prefer no-cost operation (good quality, but not as sophisticated)
             """)
             return
     else:
         # Free mode selected
-        st.sidebar.success("🆓 Free Mode Selected")
+        st.sidebar.success("Free Mode Selected")
         st.sidebar.info("""
         **Free Mode Features:**
         - No API key required
@@ -427,7 +426,7 @@ def main():
         - Works completely offline
         - Good quality for basic screening
         
-        **💡 Recommendation**: For professional use, 
+        **Recommendation**: For professional use, 
         switch to OpenAI mode above for significantly 
         better semantic understanding and summaries.
         """)
@@ -437,27 +436,27 @@ def main():
         if use_openai:
             embedding_service = EmbeddingService(api_key)
             ai_service = AIService(api_key)
-            st.sidebar.success("✅ OpenAI connection ready!")
+            st.sidebar.success("OpenAI connection ready!")
         else:
             # Use free services
             from app.services.free_embedding_service import free_embedding_service, free_ai_service
             embedding_service = free_embedding_service
             ai_service = free_ai_service
-            st.sidebar.success("✅ Free AI services ready!")
+            st.sidebar.success("Free AI services ready!")
     except Exception as e:
         if use_openai:
-            st.sidebar.error(f"❌ OpenAI connection failed: {e}")
+            st.sidebar.error(f"OpenAI connection failed: {e}")
         else:
-            st.sidebar.error(f"❌ Free services failed: {e}")
+            st.sidebar.error(f"Free services failed: {e}")
         return
     
     # Sidebar settings
     with st.sidebar:
-        st.header("⚙️ Settings")
+        st.header("Settings")
         
         method = st.selectbox(
             "Input Method",
-            ["📁 File Upload", "✏️ Text Input"],
+            ["File Upload", "Text Input"],
             help="Choose how to provide candidate information"
         )
         
@@ -466,7 +465,7 @@ def main():
         include_summary = st.checkbox("Include AI summaries", value=True)
     
     # Job Description
-    st.header("📝 Job Description")
+    st.header("Job Description")
     
     col1, col2 = st.columns([2, 1])
     
@@ -493,7 +492,7 @@ def main():
     # Method-specific input
     candidates = []
     
-    if method == "📁 File Upload":
+    if method == "File Upload":
         st.header("📁 Upload Candidate Resumes")
         
         uploaded_files = st.file_uploader(
@@ -569,10 +568,10 @@ def main():
     
     # Process candidates
     if candidates:
-        st.info(f"✅ {len(candidates)} candidates ready for analysis")
+        st.info(f"{len(candidates)} candidates ready for analysis")
         
-        if st.button("🔍 Analyze Candidates", type="primary"):
-            with st.spinner("🔄 Generating embeddings and computing similarities..."):
+        if st.button("Analyze Candidates", type="primary"):
+            with st.spinner("Generating embeddings and computing similarities..."):
                 start_time = time.time()
                 
                 # Create job description text
@@ -634,7 +633,7 @@ def main():
                 st.success(f"⚡ Processing completed in {processing_time:.2f} seconds")
     
     else:
-        if method == "📁 File Upload":
+        if method == "File Upload":
             st.info("👆 Please upload resume files using the file uploader above")
         else:
             st.info("👆 Please add at least one candidate with both name and resume content")

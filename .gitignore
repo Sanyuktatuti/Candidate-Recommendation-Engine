@@ -1,0 +1,33 @@
+# Environment
+.env
+*.env
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+
+# Logs
+*.log
+api.log
+streamlit.log
+run.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Process files
+*.pid
+
+# Streamlit
+.streamlit/secrets.toml

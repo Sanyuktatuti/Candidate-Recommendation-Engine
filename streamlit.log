@@ -8,11 +8,4 @@
   $ xcode-select --install
   $ pip install watchdog
             
-
-  A new version of Streamlit is available.
-
-  See what's new at https://discuss.streamlit.io/c/announcements
-
-  Enter the following command to upgrade:
-  $ pip install streamlit --upgrade
-
+  Stopping...

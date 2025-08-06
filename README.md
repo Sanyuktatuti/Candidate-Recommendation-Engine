@@ -4,9 +4,11 @@ An AI-powered web application that matches the best candidates to job descriptio
 
 ## ✨ Features
 
-- **Smart Matching**: Uses OpenAI embeddings and cosine similarity for semantic job-candidate matching
+- **Smart Matching**: Uses AI embeddings and cosine similarity for semantic job-candidate matching
+- **Multiple AI Options**: Choose between OpenAI (premium) or free open-source models
+- **No API Key Required**: Works completely free with built-in TF-IDF and keyword matching
 - **Multiple Input Methods**: Upload resume files (PDF/DOCX/TXT) or paste text directly
-- **AI-Powered Insights**: GPT-generated summaries explaining why each candidate is a great fit
+- **AI-Powered Insights**: Generated summaries explaining why each candidate is a great fit
 - **Interactive UI**: Modern Streamlit interface with charts, metrics, and detailed candidate analysis
 - **Production Ready**: FastAPI backend with Docker deployment, health checks, and monitoring
 - **Scalable Architecture**: Modular design with FAISS vector search and async processing
@@ -42,8 +44,8 @@ An AI-powered web application that matches the best candidates to job descriptio
 ### Prerequisites
 
 - Python 3.11+
-- Docker & Docker Compose (for containerized deployment)
-- OpenAI API key
+- Docker & Docker Compose (for containerized deployment) 
+- **Optional**: OpenAI API key (for best quality) or use free mode
 
 ### 1. Clone & Setup
 
@@ -60,12 +62,35 @@ Create a `.env` file:
 cp .env.example .env
 ```
 
-Edit `.env` and add your OpenAI API key:
+Edit `.env` and add your OpenAI API key (optional):
 
 ```env
-OPENAI_API_KEY=your_openai_api_key_here
+OPENAI_API_KEY=your_openai_api_key_here  # Optional - leave blank for free mode
 DEBUG=True
 ```
+
+## 🤖 AI Service Options
+
+### **🆓 Free Mode (No API Key Required)**
+- **Cost**: $0 forever
+- **Technology**: TF-IDF vectorization + keyword matching
+- **Quality**: Good for most use cases
+- **Speed**: Fast
+- **Requirements**: None
+
+### **💰 OpenAI Mode (Premium)**
+- **Cost**: ~$0.002 per candidate analysis
+- **Technology**: OpenAI embeddings + GPT summaries  
+- **Quality**: Excellent semantic understanding
+- **Speed**: Moderate (API calls)
+- **Requirements**: OpenAI API key
+
+### **🔬 Advanced Free (Optional)**
+- **Cost**: $0 (but requires download)
+- **Technology**: SentenceTransformers + local models
+- **Quality**: Very good semantic understanding
+- **Speed**: Fast after initial setup
+- **Requirements**: `pip install sentence-transformers`
 
 ### 3. Run the Application
 

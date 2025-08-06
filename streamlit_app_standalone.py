@@ -196,6 +196,109 @@ SUMMARY:"""
         except Exception as e:
             return f"Unable to generate summary: {str(e)}"
 
+
+class FreeEmbeddingService:
+    """Free embedding service using TF-IDF and keyword matching."""
+    
+    def __init__(self):
+        self.vectorizer = None
+        self.method = "tfidf"
+        self.dimension = 1000
+    
+    def get_embedding(self, text: str) -> List[float]:
+        """Get embedding for single text."""
+        if not hasattr(self, '_fitted') or not self._fitted:
+            return [0.0] * self.dimension
+        
+        try:
+            tfidf_matrix = self.vectorizer.transform([text])
+            return tfidf_matrix.toarray()[0].tolist()
+        except:
+            return [0.0] * self.dimension
+    
+    def get_embeddings_batch(self, texts: List[str]) -> List[List[float]]:
+        """Get embeddings for multiple texts using TF-IDF."""
+        try:
+            from sklearn.feature_extraction.text import TfidfVectorizer
+            
+            # Initialize TF-IDF with optimized parameters
+            self.vectorizer = TfidfVectorizer(
+                max_features=1000,
+                stop_words='english', 
+                ngram_range=(1, 2),
+                min_df=1,
+                max_df=0.95
+            )
+            
+            # Fit and transform
+            tfidf_matrix = self.vectorizer.fit_transform(texts)
+            self._fitted = True
+            
+            # Convert to list of lists
+            dense_matrix = tfidf_matrix.toarray()
+            return [row.tolist() for row in dense_matrix]
+            
+        except Exception as e:
+            st.error(f"Error generating embeddings: {e}")
+            return [[0.0] * self.dimension for _ in texts]
+    
+    def get_info(self) -> dict:
+        return {
+            "method": "TF-IDF + N-grams",
+            "description": "Fast keyword-based similarity using TF-IDF vectorization"
+        }
+
+
+class FreeAIService:
+    """Free AI service using template-based summaries."""
+    
+    def generate_fit_summary(self, job_description: str, resume_text: str, candidate_name: str) -> str:
+        """Generate template-based summary."""
+        try:
+            # Extract skills
+            job_skills = self._extract_skills(job_description.lower())
+            candidate_skills = self._extract_skills(resume_text.lower())
+            
+            # Find matches
+            matching_skills = set(job_skills) & set(candidate_skills)
+            match_percentage = len(matching_skills) / max(len(job_skills), 1) * 100
+            
+            # Generate summary
+            if match_percentage >= 60:
+                quality = "excellent"
+            elif match_percentage >= 40:
+                quality = "good"
+            elif match_percentage >= 20:
+                quality = "moderate"
+            else:
+                quality = "basic"
+            
+            templates = {
+                "excellent": f"{candidate_name} shows excellent alignment with this position, with strong skills in {', '.join(list(matching_skills)[:3])}. Their background demonstrates {match_percentage:.0f}% skill overlap with the requirements.",
+                "good": f"{candidate_name} presents a solid match for this role, with relevant experience in {', '.join(list(matching_skills)[:2])}. Shows {match_percentage:.0f}% alignment with the position requirements.",
+                "moderate": f"{candidate_name} has foundational qualifications with some overlap in {', '.join(list(matching_skills)[:2]) if matching_skills else 'technical areas'}. May require additional training but shows potential.",
+                "basic": f"{candidate_name} demonstrates basic qualifications for this role. Further assessment recommended to determine specific training needs and development opportunities."
+            }
+            
+            return templates[quality]
+            
+        except Exception as e:
+            return f"{candidate_name} appears to have relevant experience. Manual review recommended."
+    
+    def _extract_skills(self, text: str) -> List[str]:
+        """Extract technical skills."""
+        skills = [
+            'python', 'java', 'javascript', 'react', 'node', 'sql', 'aws', 'docker',
+            'machine learning', 'data science', 'ai', 'analytics', 'api', 'database',
+            'cloud', 'agile', 'scrum', 'git', 'linux', 'frontend', 'backend'
+        ]
+        
+        found = []
+        for skill in skills:
+            if skill in text:
+                found.append(skill)
+        return found
+
 def process_uploaded_file(uploaded_file) -> str:
     """Process uploaded file and extract text."""
     if not uploaded_file:
@@ -376,32 +479,69 @@ def main():
     # Header
     st.markdown('<div class="main-header">🎯 Candidate Recommendation Engine</div>', unsafe_allow_html=True)
     
-    # API Key input
+    # Configuration options
     st.sidebar.header("🔑 Configuration")
-    api_key = st.sidebar.text_input(
-        "OpenAI API Key",
-        type="password",
-        help="Enter your OpenAI API key. Get one at https://platform.openai.com/api-keys"
+    
+    # Choose AI service
+    ai_service_option = st.sidebar.selectbox(
+        "AI Service",
+        ["🆓 Free Mode (No API key needed)", "💰 OpenAI (Better quality)"],
+        help="Choose between free open-source models or OpenAI's premium service"
     )
     
-    if not api_key:
-        st.warning("⚠️ Please enter your OpenAI API key in the sidebar to continue.")
-        st.info("""
-        **To get started:**
-        1. Get an OpenAI API key from https://platform.openai.com/api-keys
-        2. Enter it in the sidebar
-        3. Fill in the job description below
-        4. Upload candidate resumes or enter text manually
-        """)
-        return
+    use_openai = "OpenAI" in ai_service_option
+    api_key = None
     
-    # Initialize services
+    if use_openai:
+        api_key = st.sidebar.text_input(
+            "OpenAI API Key",
+            type="password",
+            help="Enter your OpenAI API key. Get one at https://platform.openai.com/api-keys"
+        )
+        
+        if not api_key:
+            st.warning("⚠️ Please enter your OpenAI API key in the sidebar to continue with OpenAI mode.")
+            st.info("""
+            **To use OpenAI (recommended for best quality):**
+            1. Get an OpenAI API key from https://platform.openai.com/api-keys
+            2. Enter it in the sidebar
+            
+            **Or switch to Free Mode above for no-cost operation!**
+            """)
+            return
+    else:
+        # Free mode selected
+        st.sidebar.success("🆓 Free Mode Selected")
+        st.sidebar.info("""
+        **Free Mode Features:**
+        - No API key required
+        - Uses open-source AI models
+        - Works completely offline
+        - Good quality for most use cases
+        """)
+        
+        # Show which free method is being used
+        free_embedding_service = FreeEmbeddingService()
+        method_info = free_embedding_service.get_info()
+        st.sidebar.write(f"**Method:** {method_info['method']}")
+        st.sidebar.write(f"**Quality:** {method_info['description']}")
+    
+    # Initialize services based on mode
     try:
-        embedding_service = EmbeddingService(api_key)
-        ai_service = AIService(api_key)
-        st.sidebar.success("✅ OpenAI connection ready!")
+        if use_openai:
+            embedding_service = EmbeddingService(api_key)
+            ai_service = AIService(api_key)
+            st.sidebar.success("✅ OpenAI connection ready!")
+        else:
+            # Use free services
+            embedding_service = FreeEmbeddingService()
+            ai_service = FreeAIService()
+            st.sidebar.success("✅ Free AI services ready!")
     except Exception as e:
-        st.sidebar.error(f"❌ OpenAI connection failed: {e}")
+        if use_openai:
+            st.sidebar.error(f"❌ OpenAI connection failed: {e}")
+        else:
+            st.sidebar.error(f"❌ Free services failed: {e}")
         return
     
     # Sidebar settings

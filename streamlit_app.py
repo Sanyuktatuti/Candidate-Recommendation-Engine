@@ -379,7 +379,7 @@ def main():
     """Main Streamlit application."""
     
     # Header
-    st.markdown('<div class="main-header">🎯 Candidate Recommendation Engine</div>', unsafe_allow_html=True)
+    st.markdown('<div class="main-header">Candidate Recommendation Engine</div>', unsafe_allow_html=True)
     
     # Configuration options
     st.sidebar.header("🔑 Configuration")

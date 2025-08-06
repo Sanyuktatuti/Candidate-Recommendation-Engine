@@ -36,25 +36,163 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS
+# Custom CSS for professional UI
 st.markdown("""
 <style>
+    /* Main header styling */
     .main-header {
-        font-size: 2.5rem;
-        font-weight: 700;
-        color: #1f77b4;
+        font-size: 2.8rem;
+        font-weight: 300;
+        color: #2C3E50;
         text-align: center;
-        margin-bottom: 2rem;
+        margin-bottom: 3rem;
+        letter-spacing: -0.5px;
+        border-bottom: 3px solid #3498DB;
+        padding-bottom: 1rem;
     }
-    .similarity-score {
-        font-size: 1.2rem;
-        font-weight: bold;
-        color: #2e8b57;
+    
+    /* Section headers */
+    .section-header {
+        font-size: 1.4rem;
+        font-weight: 600;
+        color: #34495E;
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+        padding-left: 0.5rem;
+        border-left: 4px solid #3498DB;
     }
-    .candidate-name {
+    
+    /* Progress button */
+    .progress-button {
+        background: linear-gradient(135deg, #3498DB 0%, #2980B9 100%);
+        color: white;
+        padding: 0.8rem 2rem;
+        border: none;
+        border-radius: 8px;
         font-size: 1.1rem;
         font-weight: 600;
-        color: #333;
+        cursor: pointer;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin: 1.5rem auto;
+    }
+    
+    .progress-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        background: linear-gradient(135deg, #2980B9 0%, #1A6B9D 100%);
+    }
+    
+    /* Cards and containers */
+    .card {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        border: 1px solid #E8EBF0;
+        margin-bottom: 1.5rem;
+    }
+    
+    /* Similarity score styling */
+    .similarity-score {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #27AE60;
+        background: linear-gradient(135deg, #D5F4E6, #FDEEF4);
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        display: inline-block;
+    }
+    
+    /* Candidate name styling */
+    .candidate-name {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #2C3E50;
+        margin-bottom: 0.8rem;
+        border-bottom: 2px solid #ECF0F1;
+        padding-bottom: 0.5rem;
+    }
+    
+    /* Metric cards */
+    .metric-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 1.5rem;
+        border-radius: 12px;
+        color: white;
+        text-align: center;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+    
+    /* Upload area styling */
+    .upload-area {
+        border: 2px dashed #BDC3C7;
+        border-radius: 8px;
+        padding: 2rem;
+        text-align: center;
+        background: #FAFBFC;
+        transition: all 0.3s ease;
+    }
+    
+    .upload-area:hover {
+        border-color: #3498DB;
+        background: #EBF3FD;
+    }
+    
+    /* Step indicator */
+    .step-indicator {
+        background: #E8F4FD;
+        border: 1px solid #D6EAF8;
+        border-radius: 8px;
+        padding: 1rem;
+        margin: 1rem 0;
+        color: #2980B9;
+        font-weight: 500;
+        text-align: center;
+    }
+    
+    /* Main container */
+    .main .block-container {
+        max-width: 1200px;
+        padding-top: 2rem;
+        padding-left: 2rem;
+        padding-right: 2rem;
+    }
+    
+    /* Input fields */
+    .stTextInput > div > div > input {
+        border-radius: 8px;
+        border: 2px solid #E8EBF0;
+        padding: 0.75rem;
+        font-size: 1rem;
+    }
+    
+    .stTextArea > div > div > textarea {
+        border-radius: 8px;
+        border: 2px solid #E8EBF0;
+        padding: 0.75rem;
+        font-size: 1rem;
+    }
+    
+    .stTextInput > div > div > input:focus,
+    .stTextArea > div > div > textarea:focus {
+        border-color: #3498DB;
+        box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+    }
+    
+    /* Remove emojis and clean section headers */
+    .clean-header {
+        font-size: 1.6rem;
+        font-weight: 600;
+        color: #2C3E50;
+        margin: 2rem 0 1rem 0;
+        padding: 1rem;
+        background: linear-gradient(135deg, #F8F9FA 0%, #E9ECEF 100%);
+        border-left: 4px solid #3498DB;
+        border-radius: 0 8px 8px 0;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -507,15 +645,16 @@ def main():
     """Main Streamlit application."""
     
     # Header
-    st.markdown('<div class="main-header">🎯 Candidate Recommendation Engine</div>', unsafe_allow_html=True)
+    st.markdown('<div class="main-header">Candidate Recommendation Engine</div>', unsafe_allow_html=True)
+    st.markdown('<div class="step-indicator">AI-powered semantic matching for intelligent hiring decisions</div>', unsafe_allow_html=True)
     
     # Configuration options
-    st.sidebar.header("🔑 Configuration")
+    st.sidebar.header("Configuration")
     
     # Choose AI service
     ai_service_option = st.sidebar.selectbox(
         "AI Service",
-        ["🚀 OpenAI (Recommended - Best Quality)", "🆓 Free Mode (Good Alternative)"],
+        ["OpenAI (Recommended - Best Quality)", "Free Mode (Good Alternative)"],
         help="OpenAI provides superior semantic understanding and professional summaries. Free mode is a solid backup option."
     )
     
@@ -547,7 +686,7 @@ def main():
             return
     else:
         # Free mode selected
-        st.sidebar.success("🆓 Free Mode Selected")
+        st.sidebar.success("Free Mode Selected")
         st.sidebar.info("""
         **Free Mode Features:**
         - No API key required
@@ -555,7 +694,7 @@ def main():
         - Works completely offline
         - Good quality for basic screening
         
-        **💡 Recommendation**: For professional use, 
+        **Recommendation**: For professional use, 
         switch to OpenAI mode above for significantly 
         better semantic understanding and summaries.
         """)
@@ -586,11 +725,11 @@ def main():
     
     # Sidebar settings
     with st.sidebar:
-        st.header("⚙️ Settings")
+        st.header("Settings")
         
         method = st.selectbox(
             "Input Method",
-            ["📁 File Upload", "✏️ Text Input"],
+            ["File Upload", "Text Input"],
             help="Choose how to provide candidate information"
         )
         
@@ -599,7 +738,7 @@ def main():
         include_summary = st.checkbox("Include AI summaries", value=True)
     
     # Job Description
-    st.header("📝 Job Description")
+    st.markdown('<div class="clean-header">Step 1: Job Description</div>', unsafe_allow_html=True)
     
     col1, col2 = st.columns([2, 1])
     
@@ -607,27 +746,43 @@ def main():
         job_title = st.text_input("Job Title", placeholder="e.g., Senior Software Engineer")
         job_description = st.text_area(
             "Job Description",
-            height=150,
-            placeholder="Describe the role, responsibilities, and what you're looking for..."
+            height=180,
+            placeholder="Describe the role, responsibilities, required skills, and qualifications..."
         )
     
     with col2:
         job_requirements = st.text_area(
-            "Requirements (Optional)",
-            height=150,
-            placeholder="Specific skills, experience, or qualifications required..."
+            "Additional Requirements",
+            height=180,
+            placeholder="Specific skills, experience, or qualifications..."
         )
     
-    # Input validation
-    if not job_title or not job_description:
-        st.warning("Please provide both job title and description to proceed.")
+    # Progress indicator and validation
+    job_complete = bool(job_description.strip() and job_title.strip())
+    
+    if job_complete:
+        st.markdown("""
+        <div style="background: #D5F4E6; border: 1px solid #27AE60; border-radius: 8px; padding: 1rem; margin: 1rem 0; color: #1E8449;">
+            <strong>✓ Job description complete</strong> - Ready to proceed to candidate upload
+        </div>
+        """, unsafe_allow_html=True)
+        
+        # Progress button
+        if st.button("Continue to Candidate Upload →", key="proceed_button", help="Click to proceed to the next step"):
+            st.markdown('<div class="step-indicator">Proceed to upload candidate resumes below</div>', unsafe_allow_html=True)
+    else:
+        st.markdown("""
+        <div style="background: #FEF9E7; border: 1px solid #F39C12; border-radius: 8px; padding: 1rem; margin: 1rem 0; color: #D68910;">
+            <strong>Please complete the job title and description above to continue</strong>
+        </div>
+        """, unsafe_allow_html=True)
         return
     
     # Method-specific input
     candidates = []
     
-    if method == "📁 File Upload":
-        st.header("📁 Upload Candidate Resumes")
+    if method == "File Upload":
+        st.markdown('<div class="clean-header">Step 2: Upload Candidate Resumes</div>', unsafe_allow_html=True)
         
         uploaded_files = st.file_uploader(
             "Choose resume files",
@@ -658,7 +813,7 @@ def main():
                     })
     
     else:  # Text Input
-        st.header("✏️ Enter Candidate Information")
+        st.markdown('<div class="clean-header">Step 2: Enter Candidate Information</div>', unsafe_allow_html=True)
         
         # Dynamic candidate input
         if "candidates_text" not in st.session_state:
@@ -704,8 +859,8 @@ def main():
     if candidates:
         st.info(f"✅ {len(candidates)} candidates ready for analysis")
         
-        if st.button("🔍 Analyze Candidates", type="primary"):
-            with st.spinner("🔄 Generating embeddings and computing similarities..."):
+        if st.button("Analyze Candidates", type="primary"):
+            with st.spinner("Generating embeddings and computing similarities..."):
                 start_time = time.time()
                 
                 # Create job description text

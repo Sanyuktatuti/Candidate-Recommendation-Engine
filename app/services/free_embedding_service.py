@@ -42,7 +42,7 @@ class FreeEmbeddingService:
         self.method = method
         self.model = None
         self.vectorizer = None
-        self.dimension = 384  # Default dimension
+        self.dimension = 2000  # Match TF-IDF max_features
         
         # Auto-select best available method
         if method == "auto":
@@ -119,6 +119,17 @@ class FreeEmbeddingService:
                 return [emb.tolist() for emb in embeddings]
                 
             elif self.method == "tfidf":
+                # Enhanced TF-IDF with better parameters for resumes
+                self.vectorizer = TfidfVectorizer(
+                    max_features=2000,  # More features for better granularity
+                    stop_words='english',
+                    ngram_range=(1, 3),  # Include trigrams for better context
+                    min_df=1,
+                    max_df=0.85,  # More restrictive to filter common words
+                    sublinear_tf=True,  # Use log scaling
+                    norm='l2'  # L2 normalization for better cosine similarity
+                )
+                
                 # Fit TF-IDF on all texts
                 tfidf_matrix = self.vectorizer.fit_transform(cleaned_texts)
                 dense_matrix = tfidf_matrix.toarray()
@@ -162,16 +173,45 @@ class FreeEmbeddingService:
             return job_embedding, candidate_embeddings
     
     def _preprocess_text(self, text: str) -> str:
-        """Preprocess text before embedding."""
-        # Basic cleaning
-        cleaned = " ".join(text.strip().split())
+        """Enhanced preprocessing for better TF-IDF performance."""
+        import re
+        
+        # Convert to lowercase
+        text = text.lower()
+        
+        # Enhanced cleaning for technical resumes
+        # Remove email addresses and URLs
+        text = re.sub(r'\S+@\S+', ' ', text)
+        text = re.sub(r'http\S+|www\S+', ' ', text)
+        
+        # Normalize common technical terms and skills
+        tech_replacements = {
+            'javascript': 'javascript js',
+            'python': 'python programming',
+            'machine learning': 'machinelearning ml ai',
+            'artificial intelligence': 'ai machinelearning',
+            'data science': 'datascience analytics',
+            'web development': 'webdevelopment frontend backend',
+            'full stack': 'fullstack frontend backend',
+            'node.js': 'nodejs javascript',
+            'react.js': 'reactjs react javascript',
+            'database': 'database sql nosql',
+            'cloud computing': 'cloud aws azure gcp',
+        }
+        
+        for original, replacement in tech_replacements.items():
+            text = text.replace(original, replacement)
+        
+        # Clean up whitespace and special characters
+        text = re.sub(r'[^\w\s]', ' ', text)
+        text = " ".join(text.split())
         
         # Truncate if too long
-        max_chars = 5000  # Reasonable limit for free models
-        if len(cleaned) > max_chars:
-            cleaned = cleaned[:max_chars]
+        max_chars = 8000  # Increased limit for better context
+        if len(text) > max_chars:
+            text = text[:max_chars]
         
-        return cleaned
+        return text
     
     def _simple_text_embedding(self, text: str) -> List[float]:
         """
@@ -239,6 +279,13 @@ class FreeEmbeddingService:
             vec2 = np.array(embedding2).reshape(1, -1)
             
             similarity = cosine_similarity(vec1, vec2)[0][0]
+            
+            # Apply enhancement for better score distribution
+            # This helps make the scores more meaningful for TF-IDF
+            if similarity > 0:
+                # Square root to spread out low scores, then scale
+                similarity = np.sqrt(similarity) * 0.8  # Max ~80% for free mode
+            
             return max(0.0, min(1.0, float(similarity)))
             
         except Exception as e:

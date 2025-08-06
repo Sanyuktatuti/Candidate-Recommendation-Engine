@@ -203,7 +203,7 @@ class FreeEmbeddingService:
     def __init__(self):
         self.vectorizer = None
         self.method = "tfidf"
-        self.dimension = 1000
+        self.dimension = 2000  # Match max_features
     
     def get_embedding(self, text: str) -> List[float]:
         """Get embedding for single text."""
@@ -221,13 +221,15 @@ class FreeEmbeddingService:
         try:
             from sklearn.feature_extraction.text import TfidfVectorizer
             
-            # Initialize TF-IDF with optimized parameters
+            # Enhanced TF-IDF with better parameters for resumes
             self.vectorizer = TfidfVectorizer(
-                max_features=1000,
-                stop_words='english', 
-                ngram_range=(1, 2),
+                max_features=2000,  # More features for better granularity
+                stop_words='english',
+                ngram_range=(1, 3),  # Include trigrams for better context
                 min_df=1,
-                max_df=0.95
+                max_df=0.85,  # More restrictive to filter common words
+                sublinear_tf=True,  # Use log scaling
+                norm='l2'  # L2 normalization for better cosine similarity
             )
             
             # Fit and transform
@@ -342,7 +344,7 @@ def process_uploaded_file(uploaded_file) -> str:
         st.error(f"Unsupported file type: {filename}")
         return ""
 
-def compute_similarity_scores(job_embedding: List[float], candidate_embeddings: List[List[float]]) -> List[float]:
+def compute_similarity_scores(job_embedding: List[float], candidate_embeddings: List[List[float]], is_free_mode: bool = False) -> List[float]:
     """Compute cosine similarity scores."""
     if not job_embedding or not candidate_embeddings:
         return []
@@ -352,6 +354,11 @@ def compute_similarity_scores(job_embedding: List[float], candidate_embeddings: 
     
     # Compute cosine similarity
     similarities = cosine_similarity(job_vec, candidate_vecs)[0]
+    
+    # Enhance scores for free mode to make them more meaningful
+    if is_free_mode:
+        # Apply square root transformation to spread out low scores
+        similarities = np.sqrt(np.maximum(similarities, 0)) * 0.85  # Max ~85% for free mode
     
     # Ensure scores are between 0 and 1
     similarities = np.clip(similarities, 0, 1)
@@ -728,7 +735,7 @@ def main():
                 
                 # Compute similarities
                 progress_bar.progress(60)
-                similarities = compute_similarity_scores(job_embedding, candidate_embeddings)
+                similarities = compute_similarity_scores(job_embedding, candidate_embeddings, is_free_mode=not use_openai)
                 
                 # Generate summaries
                 summaries = []

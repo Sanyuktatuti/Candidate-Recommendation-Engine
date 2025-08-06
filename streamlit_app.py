@@ -216,7 +216,7 @@ def process_uploaded_file(uploaded_file) -> str:
         st.error(f"Unsupported file type: {filename}")
         return ""
 
-def compute_similarity_scores(job_embedding: List[float], candidate_embeddings: List[List[float]]) -> List[float]:
+def compute_similarity_scores(job_embedding: List[float], candidate_embeddings: List[List[float]], is_free_mode: bool = False) -> List[float]:
     """Compute cosine similarity scores."""
     if not job_embedding or not candidate_embeddings:
         return []
@@ -226,6 +226,11 @@ def compute_similarity_scores(job_embedding: List[float], candidate_embeddings: 
     
     # Compute cosine similarity
     similarities = cosine_similarity(job_vec, candidate_vecs)[0]
+    
+    # Enhance scores for free mode to make them more meaningful
+    if is_free_mode:
+        # Apply square root transformation to spread out low scores
+        similarities = np.sqrt(np.maximum(similarities, 0)) * 0.85  # Max ~85% for free mode
     
     # Ensure scores are between 0 and 1
     similarities = np.clip(similarities, 0, 1)
@@ -597,7 +602,7 @@ def main():
                 
                 # Compute similarities
                 progress_bar.progress(60)
-                similarities = compute_similarity_scores(job_embedding, candidate_embeddings)
+                similarities = compute_similarity_scores(job_embedding, candidate_embeddings, is_free_mode=not use_openai)
                 
                 # Generate summaries
                 summaries = []

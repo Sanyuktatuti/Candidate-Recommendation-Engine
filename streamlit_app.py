@@ -376,32 +376,74 @@ def main():
     # Header
     st.markdown('<div class="main-header">🎯 Candidate Recommendation Engine</div>', unsafe_allow_html=True)
     
-    # API Key input
+    # Configuration options
     st.sidebar.header("🔑 Configuration")
-    api_key = st.sidebar.text_input(
-        "OpenAI API Key",
-        type="password",
-        help="Enter your OpenAI API key. Get one at https://platform.openai.com/api-keys"
+    
+    # Choose AI service
+    ai_service_option = st.sidebar.selectbox(
+        "AI Service",
+        ["🚀 OpenAI (Recommended - Best Quality)", "🆓 Free Mode (Good Alternative)"],
+        help="OpenAI provides superior semantic understanding and professional summaries. Free mode is a solid backup option."
     )
     
-    if not api_key:
-        st.warning("⚠️ Please enter your OpenAI API key in the sidebar to continue.")
-        st.info("""
-        **To get started:**
-        1. Get an OpenAI API key from https://platform.openai.com/api-keys
-        2. Enter it in the sidebar
-        3. Fill in the job description below
-        4. Upload candidate resumes or enter text manually
-        """)
-        return
+    use_openai = "OpenAI" in ai_service_option
+    api_key = None
     
-    # Initialize services
+    if use_openai:
+        api_key = st.sidebar.text_input(
+            "OpenAI API Key",
+            type="password",
+            help="Enter your OpenAI API key. Get one at https://platform.openai.com/api-keys"
+        )
+        
+        if not api_key:
+            st.warning("⚠️ Please enter your OpenAI API key in the sidebar to use the recommended OpenAI service.")
+            st.info("""
+            **💡 Why OpenAI is Recommended:**
+            - **Superior Quality**: Best-in-class semantic understanding
+            - **Professional Summaries**: Human-like analysis of candidate fit
+            - **Proven Accuracy**: Industry-leading AI for HR applications
+            - **Cost**: Only ~$0.002 per candidate analysis
+            
+            **🔗 Get Started:**
+            1. Get an OpenAI API key from https://platform.openai.com/api-keys
+            2. Enter it in the sidebar above
+            
+            **💡 Alternative**: Switch to "Free Mode" above if you prefer no-cost operation (good quality, but not as sophisticated)
+            """)
+            return
+    else:
+        # Free mode selected
+        st.sidebar.success("🆓 Free Mode Selected")
+        st.sidebar.info("""
+        **Free Mode Features:**
+        - No API key required
+        - Uses FastAPI backend with TF-IDF
+        - Works completely offline
+        - Good quality for basic screening
+        
+        **💡 Recommendation**: For professional use, 
+        switch to OpenAI mode above for significantly 
+        better semantic understanding and summaries.
+        """)
+    
+    # Initialize services based on mode
     try:
-        embedding_service = EmbeddingService(api_key)
-        ai_service = AIService(api_key)
-        st.sidebar.success("✅ OpenAI connection ready!")
+        if use_openai:
+            embedding_service = EmbeddingService(api_key)
+            ai_service = AIService(api_key)
+            st.sidebar.success("✅ OpenAI connection ready!")
+        else:
+            # Use free services
+            from app.services.free_embedding_service import free_embedding_service, free_ai_service
+            embedding_service = free_embedding_service
+            ai_service = free_ai_service
+            st.sidebar.success("✅ Free AI services ready!")
     except Exception as e:
-        st.sidebar.error(f"❌ OpenAI connection failed: {e}")
+        if use_openai:
+            st.sidebar.error(f"❌ OpenAI connection failed: {e}")
+        else:
+            st.sidebar.error(f"❌ Free services failed: {e}")
         return
     
     # Sidebar settings

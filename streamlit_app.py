@@ -40,14 +40,17 @@ st.markdown("""
 <style>
     /* Main header styling */
     .main-header {
-        font-size: 2.8rem;
-        font-weight: 300;
-        color: #2C3E50;
+        font-size: 3.2rem;
+        font-weight: 600;
+        color: #FFFFFF;
         text-align: center;
         margin-bottom: 3rem;
         letter-spacing: -0.5px;
-        border-bottom: 3px solid #3498DB;
-        padding-bottom: 1rem;
+        background: linear-gradient(135deg, #3498DB 0%, #2980B9 100%);
+        padding: 2rem;
+        border-radius: 15px;
+        box-shadow: 0 8px 24px rgba(52, 152, 219, 0.3);
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     }
     
     /* Step indicator */
@@ -426,7 +429,14 @@ def main():
     """Main Streamlit application."""
     
     # Header
-    st.markdown('<div class="main-header">Candidate Recommendation Engine</div>', unsafe_allow_html=True)
+    st.markdown("""
+    <div class="main-header">
+        Candidate Recommendation Engine
+        <div style="font-size: 1.2rem; font-weight: 400; margin-top: 0.5rem; opacity: 0.9;">
+            AI-powered semantic matching for intelligent hiring decisions
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
     
     # Configuration options
     st.sidebar.header("Configuration")

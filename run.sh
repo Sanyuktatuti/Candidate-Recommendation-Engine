@@ -82,11 +82,13 @@ check_env_file() {
         exit 1
     fi
     
-    # Check if API key is set
+    # Check if API key is set (now optional since we support free mode)
     if grep -q "your_openai_api_key_here" .env; then
-        print_warning "Please set your OpenAI API key in the .env file!"
-        print_info "Edit .env and replace 'your_openai_api_key_here' with your actual API key"
-        exit 1
+        print_warning "⚠️  Please set your OpenAI API key in the .env file!"
+        print_info "ℹ️  Edit .env and replace 'your_openai_api_key_here' with your actual API key"
+        print_info "💡 Or you can continue with Free Mode (TF-IDF + keyword matching)"
+        print_info "🚀 The app will work in Free Mode, but OpenAI provides better quality"
+        echo ""
     fi
 }
 

@@ -485,8 +485,8 @@ def main():
     # Choose AI service
     ai_service_option = st.sidebar.selectbox(
         "AI Service",
-        ["🆓 Free Mode (No API key needed)", "💰 OpenAI (Better quality)"],
-        help="Choose between free open-source models or OpenAI's premium service"
+        ["🚀 OpenAI (Recommended - Best Quality)", "🆓 Free Mode (Good Alternative)"],
+        help="OpenAI provides superior semantic understanding and professional summaries. Free mode is a solid backup option."
     )
     
     use_openai = "OpenAI" in ai_service_option
@@ -500,13 +500,19 @@ def main():
         )
         
         if not api_key:
-            st.warning("⚠️ Please enter your OpenAI API key in the sidebar to continue with OpenAI mode.")
+            st.warning("⚠️ Please enter your OpenAI API key in the sidebar to use the recommended OpenAI service.")
             st.info("""
-            **To use OpenAI (recommended for best quality):**
-            1. Get an OpenAI API key from https://platform.openai.com/api-keys
-            2. Enter it in the sidebar
+            **💡 Why OpenAI is Recommended:**
+            - **Superior Quality**: Best-in-class semantic understanding
+            - **Professional Summaries**: Human-like analysis of candidate fit
+            - **Proven Accuracy**: Industry-leading AI for HR applications
+            - **Cost**: Only ~$0.002 per candidate analysis
             
-            **Or switch to Free Mode above for no-cost operation!**
+            **🔗 Get Started:**
+            1. Get an OpenAI API key from https://platform.openai.com/api-keys
+            2. Enter it in the sidebar above
+            
+            **💡 Alternative**: Switch to "Free Mode" above if you prefer no-cost operation (good quality, but not as sophisticated)
             """)
             return
     else:
@@ -515,9 +521,13 @@ def main():
         st.sidebar.info("""
         **Free Mode Features:**
         - No API key required
-        - Uses open-source AI models
+        - Uses TF-IDF + keyword matching
         - Works completely offline
-        - Good quality for most use cases
+        - Good quality for basic screening
+        
+        **💡 Recommendation**: For professional use, 
+        switch to OpenAI mode above for significantly 
+        better semantic understanding and summaries.
         """)
         
         # Show which free method is being used

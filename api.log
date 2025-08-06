@@ -1,59 +1,12 @@
-INFO:     Started server process [31948]
+INFO:     Started server process [69539]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
 INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
-INFO:httpx:HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
-INFO:app.services.embedding_service:Generated embedding for text of length 4
-INFO:     127.0.0.1:62045 - "GET /health HTTP/1.1" 200 OK
-INFO:httpx:HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
-INFO:app.services.embedding_service:Generated embedding for text of length 4
-INFO:     127.0.0.1:62055 - "GET /health HTTP/1.1" 200 OK
-INFO:httpx:HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
-INFO:app.services.embedding_service:Generated embedding for text of length 4
-INFO:     127.0.0.1:62065 - "GET /health HTTP/1.1" 200 OK
-INFO:httpx:HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
-INFO:app.services.embedding_service:Generated embedding for text of length 4
-INFO:     127.0.0.1:62073 - "GET /health HTTP/1.1" 200 OK
-INFO:httpx:HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
-INFO:app.services.embedding_service:Generated embedding for text of length 4
-INFO:     127.0.0.1:62080 - "GET /health HTTP/1.1" 200 OK
-INFO:httpx:HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
-INFO:app.services.embedding_service:Generated embedding for text of length 4
-INFO:     127.0.0.1:62086 - "GET /health HTTP/1.1" 200 OK
-INFO:httpx:HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
-INFO:app.services.embedding_service:Generated embedding for text of length 4
-INFO:     127.0.0.1:62093 - "GET /health HTTP/1.1" 200 OK
-INFO:httpx:HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
-INFO:app.services.embedding_service:Generated embedding for text of length 4
-INFO:     127.0.0.1:62106 - "GET /health HTTP/1.1" 200 OK
-INFO:app.main:Processing upload search with 5 files
-INFO:app.services.document_service:Extracted 5229 characters from PDF
-INFO:app.services.document_service:Extracted 1902 characters from PDF
-INFO:app.services.document_service:Extracted 1863 characters from PDF
-INFO:app.services.document_service:Extracted 2111 characters from PDF
-INFO:app.services.document_service:Extracted 6194 characters from PDF
-INFO:app.main:Processing search request for 5 candidates
-INFO:app.main:Generating embeddings...
-INFO:httpx:HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
-INFO:app.services.embedding_service:Generated embedding for text of length 2361
-INFO:httpx:HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
-INFO:app.services.embedding_service:Generated 5 embeddings in batch
-INFO:app.services.vector_service:Built new FAISS index with dimension 1536
-INFO:app.services.vector_service:Added 5 candidates to vector index
-INFO:app.services.vector_service:Found 5 similar candidates
-INFO:httpx:HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
-INFO:app.services.ai_service:Generated fit summary for candidate Untitled document (2)
-INFO:httpx:HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
-INFO:app.services.ai_service:Generated fit summary for candidate Untitled document
-INFO:httpx:HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
-INFO:app.services.ai_service:Generated fit summary for candidate ___Resume_Sanyukta_Tuti__
-INFO:httpx:HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
-INFO:app.services.ai_service:Generated fit summary for candidate Naman Tyagi Cloud(1) (1)
-INFO:httpx:HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
-INFO:app.services.ai_service:Generated fit summary for candidate Untitled document (1)
-INFO:app.main:Search completed in 11.30 seconds
-INFO:     127.0.0.1:62111 - "POST /upload-search HTTP/1.1" 200 OK
+INFO:httpx:HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 401 Unauthorized"
+ERROR:app.services.embedding_service:Error generating embedding: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************xAEA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
+ERROR:app.services.embedding_service:Health check failed: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************xAEA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
+INFO:     127.0.0.1:63570 - "GET /health HTTP/1.1" 200 OK
 INFO:     Shutting down
 INFO:     Waiting for application shutdown.
 INFO:     Application shutdown complete.
-INFO:     Finished server process [31948]
+INFO:     Finished server process [69539]

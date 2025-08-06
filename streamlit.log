@@ -9,3 +9,26 @@
   $ pip install watchdog
             
   Stopping...
+  Stopping...
+Exception ignored in: <module 'threading' from '/Users/sanyuktatuti/.pyenv/versions/3.11.12/lib/python3.11/threading.py'>
+Traceback (most recent call last):
+  File "/Users/sanyuktatuti/.pyenv/versions/3.11.12/lib/python3.11/threading.py", line 1560, in _shutdown
+    atexit_call()
+  File "/Users/sanyuktatuti/.pyenv/versions/3.11.12/lib/python3.11/concurrent/futures/thread.py", line 31, in _python_exit
+    t.join()
+  File "/Users/sanyuktatuti/.pyenv/versions/3.11.12/lib/python3.11/threading.py", line 1119, in join
+    self._wait_for_tstate_lock()
+  File "/Users/sanyuktatuti/.pyenv/versions/3.11.12/lib/python3.11/threading.py", line 1139, in _wait_for_tstate_lock
+    if lock.acquire(block, timeout):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/sanyuktatuti/Documents/Candidate-Recommendation-Engine/.venv/lib/python3.11/site-packages/streamlit/web/bootstrap.py", line 69, in signal_handler
+    server.stop()
+  File "/Users/sanyuktatuti/Documents/Candidate-Recommendation-Engine/.venv/lib/python3.11/site-packages/streamlit/web/server/server.py", line 397, in stop
+    self._runtime.stop()
+  File "/Users/sanyuktatuti/Documents/Candidate-Recommendation-Engine/.venv/lib/python3.11/site-packages/streamlit/runtime/runtime.py", line 308, in stop
+    async_objs.eventloop.call_soon_threadsafe(stop_on_eventloop)
+  File "/Users/sanyuktatuti/.pyenv/versions/3.11.12/lib/python3.11/asyncio/base_events.py", line 807, in call_soon_threadsafe
+    self._check_closed()
+  File "/Users/sanyuktatuti/.pyenv/versions/3.11.12/lib/python3.11/asyncio/base_events.py", line 520, in _check_closed
+    raise RuntimeError('Event loop is closed')
+RuntimeError: Event loop is closed

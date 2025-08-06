@@ -55,24 +55,47 @@ cd Candidate-Recommendation-Engine
 ### 2. Environment Configuration
 
 Create a `.env` file:
+
 ```bash
 cp .env.example .env
 ```
 
 Edit `.env` and add your OpenAI API key:
+
 ```env
 OPENAI_API_KEY=your_openai_api_key_here
 DEBUG=True
 ```
 
-### 3. Quick Development Setup
+### 3. Run the Application
 
-**Option A: Development Script (Recommended)**
+**🚀 Option A: One-Command Launch (Recommended)**
+
+```bash
+# Start both servers automatically
+./run.sh
+```
+
+**🛑 Stop All Services**
+
+```bash
+./stop.sh
+```
+
+**📊 Check Status**
+
+```bash
+./status.sh
+```
+
+**Option B: Development Script**
+
 ```bash
 python scripts/dev.py
 ```
 
-**Option B: Manual Setup**
+**Option C: Manual Setup**
+
 ```bash
 # Install dependencies
 pip install -r requirements.txt
@@ -100,6 +123,49 @@ docker-compose up -d
 - **API Documentation**: http://localhost:8000/docs
 - **Health Check**: http://localhost:8000/health
 
+## 🛠️ Management Scripts
+
+The application includes convenient management scripts for easy operation:
+
+### `./run.sh` - Launch Application
+
+- Automatically activates virtual environment
+- Kills any processes using required ports (8000, 8501)
+- Starts both FastAPI and Streamlit servers
+- Performs health checks
+- Runs in background with process management
+- Creates log files (`api.log`, `streamlit.log`)
+
+### `./stop.sh` - Stop All Services
+
+- Gracefully stops all running servers
+- Cleans up process files
+- Kills any remaining processes on required ports
+
+### `./status.sh` - Check Service Status
+
+- Shows running processes and ports
+- Performs health checks on both servers
+- Displays recent log entries
+- Shows access URLs and available commands
+
+### Process Management
+
+```bash
+# Start everything
+./run.sh
+
+# Check if running
+./status.sh
+
+# Stop everything
+./stop.sh
+
+# View logs
+tail -f api.log
+tail -f streamlit.log
+```
+
 ## 💻 Usage Guide
 
 ### Using the Web Interface
@@ -117,6 +183,7 @@ docker-compose up -d
 ### API Usage
 
 **Search with JSON data:**
+
 ```bash
 curl -X POST "http://localhost:8000/search" \
   -H "Content-Type: application/json" \
@@ -138,6 +205,7 @@ curl -X POST "http://localhost:8000/search" \
 ```
 
 **Upload files:**
+
 ```bash
 curl -X POST "http://localhost:8000/upload-search" \
   -F "job_title=Senior Python Developer" \
@@ -168,21 +236,25 @@ MAX_SUMMARY_LENGTH = 200                   # AI summary max length
 ## 📊 How It Works
 
 ### 1. Text Processing
+
 - Extracts text from uploaded documents (PDF/DOCX/TXT)
 - Cleans and preprocesses content
 - Handles various file encodings and formats
 
 ### 2. Embedding Generation
+
 - Uses OpenAI's `text-embedding-ada-002` model
 - Generates 1536-dimensional vectors for job descriptions and resumes
 - Batch processing for efficiency
 
 ### 3. Similarity Computation
+
 - FAISS (Facebook AI Similarity Search) for fast vector operations
 - Cosine similarity for semantic matching
 - Normalized scores (0-100%)
 
 ### 4. AI Analysis
+
 - GPT-powered explanations for each match
 - Contextual summaries highlighting relevant skills
 - Professional tone suitable for hiring managers
@@ -204,6 +276,10 @@ candidate-recommendation-engine/
 ├── scripts/
 │   ├── dev.py               # Development server
 │   └── deploy.sh            # Deployment script
+├── run.sh                   # 🚀 One-command launcher
+├── stop.sh                  # 🛑 Stop all services
+├── status.sh                # 📊 Check service status
+├── test_setup.py            # Setup validation
 ├── streamlit_app.py         # Frontend application
 ├── config.py                # Configuration
 ├── requirements.txt         # Dependencies
@@ -215,16 +291,19 @@ candidate-recommendation-engine/
 ### Adding New Features
 
 **New Document Type:**
+
 1. Add parser in `document_service.py`
 2. Update `allowed_extensions` in config
 3. Add validation in API endpoints
 
 **Different Embedding Model:**
+
 1. Update `EMBEDDING_MODEL` in config
 2. Adjust `VECTOR_DIMENSION` if needed
 3. Test compatibility with FAISS index
 
 **Database Storage:**
+
 1. Add SQLAlchemy models
 2. Replace in-memory storage in `vector_service.py`
 3. Add database migrations
@@ -279,35 +358,59 @@ RATE_LIMIT_REQUESTS=1000
 ### Common Issues
 
 **API Not Starting:**
+
 ```bash
+# Check service status
+./status.sh
+
 # Check if port is in use
 lsof -i :8000
 
+# Stop all and restart
+./stop.sh
+./run.sh
+
 # Check logs
-docker-compose logs api
+tail -f api.log
+tail -f streamlit.log
 ```
 
 **OpenAI API Errors:**
+
 - Verify API key is correctly set in `.env`
 - Check quota and billing in OpenAI dashboard
 - Ensure proper network connectivity
 
 **File Upload Issues:**
+
 - Check file size (max 10MB by default)
 - Verify file format (PDF/DOCX/TXT only)
 - Ensure proper encoding for text files
+- File upload section only appears after entering job title and description
+
+**UI Issues:**
+
+- If Streamlit shows errors, refresh the browser page
+- Use incognito/private browsing to avoid cache issues
+- Check browser console for JavaScript errors
 
 **Performance Issues:**
+
 - Reduce batch size for large candidate sets
 - Consider caching for repeated queries
 - Monitor API rate limits
 
 ## 📈 Performance Metrics
 
+Based on real testing with 3 candidate resumes:
+
+- **Total Processing Time**: 8.82 seconds for 3 candidates (2.94s per candidate)
 - **Embedding Generation**: ~100ms per candidate
 - **Similarity Search**: <10ms for 1000 candidates (FAISS)
-- **AI Summary**: ~500ms per candidate
+- **AI Summary Generation**: ~500ms per candidate
 - **File Processing**: ~200ms per PDF page
+- **Document Upload**: Supports multiple PDF/DOCX/TXT files simultaneously
+- **Similarity Scores**: Range from 0-100% with detailed explanations
 
 ## 🤝 Contributing
 

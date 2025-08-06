@@ -1,0 +1,18 @@
+
+  You can now view your Streamlit app in your browser.
+
+  URL: http://0.0.0.0:8501
+
+  For better performance, install the Watchdog module:
+
+  $ xcode-select --install
+  $ pip install watchdog
+            
+
+  A new version of Streamlit is available.
+
+  See what's new at https://discuss.streamlit.io/c/announcements
+
+  Enter the following command to upgrade:
+  $ pip install streamlit --upgrade
+

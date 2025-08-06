@@ -1,0 +1,73 @@
+INFO:     Started server process [70620]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:httpx:HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+INFO:app.services.embedding_service:Generated embedding for text of length 4
+INFO:     127.0.0.1:53627 - "GET /health HTTP/1.1" 200 OK
+INFO:httpx:HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+INFO:app.services.embedding_service:Generated embedding for text of length 4
+INFO:     127.0.0.1:53633 - "GET /health HTTP/1.1" 200 OK
+INFO:httpx:HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+INFO:app.services.embedding_service:Generated embedding for text of length 4
+INFO:     127.0.0.1:53645 - "GET /health HTTP/1.1" 200 OK
+INFO:httpx:HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+INFO:app.services.embedding_service:Generated embedding for text of length 4
+INFO:     127.0.0.1:53653 - "GET /health HTTP/1.1" 200 OK
+INFO:httpx:HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+INFO:app.services.embedding_service:Generated embedding for text of length 4
+INFO:     127.0.0.1:53659 - "GET /health HTTP/1.1" 200 OK
+INFO:httpx:HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+INFO:app.services.embedding_service:Generated embedding for text of length 4
+INFO:     127.0.0.1:53665 - "GET /health HTTP/1.1" 200 OK
+INFO:httpx:HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+INFO:app.services.embedding_service:Generated embedding for text of length 4
+INFO:     127.0.0.1:53671 - "GET /health HTTP/1.1" 200 OK
+INFO:httpx:HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+INFO:app.services.embedding_service:Generated embedding for text of length 4
+INFO:     127.0.0.1:53675 - "GET /health HTTP/1.1" 200 OK
+INFO:app.main:Processing upload search with 2 files
+INFO:app.services.document_service:Extracted 6194 characters from PDF
+INFO:app.services.document_service:Extracted 5229 characters from PDF
+INFO:app.main:Processing search request for 2 candidates
+INFO:app.main:Generating embeddings...
+INFO:httpx:HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+INFO:app.services.embedding_service:Generated embedding for text of length 1490
+INFO:httpx:HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+INFO:app.services.embedding_service:Generated 2 embeddings in batch
+INFO:app.services.vector_service:Built new FAISS index with dimension 1536
+INFO:app.services.vector_service:Added 2 candidates to vector index
+INFO:app.services.vector_service:Found 2 similar candidates
+INFO:httpx:HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:app.services.ai_service:Generated fit summary for candidate ___Resume_Sanyukta_Tuti__
+INFO:httpx:HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:app.services.ai_service:Generated fit summary for candidate Naman Tyagi Cloud(1) (1)
+INFO:app.main:Search completed in 4.98 seconds
+INFO:     127.0.0.1:53677 - "POST /upload-search HTTP/1.1" 200 OK
+INFO:httpx:HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+INFO:app.services.embedding_service:Generated embedding for text of length 4
+INFO:     127.0.0.1:53767 - "GET /health HTTP/1.1" 200 OK
+INFO:httpx:HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+INFO:app.services.embedding_service:Generated embedding for text of length 4
+INFO:     127.0.0.1:53818 - "GET /health HTTP/1.1" 200 OK
+INFO:httpx:HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+INFO:app.services.embedding_service:Generated embedding for text of length 4
+INFO:     127.0.0.1:53830 - "GET /health HTTP/1.1" 200 OK
+INFO:app.main:Processing upload search with 2 files
+INFO:app.services.document_service:Extracted 6194 characters from PDF
+INFO:app.services.document_service:Extracted 5229 characters from PDF
+INFO:app.main:Processing search request for 2 candidates
+INFO:app.main:Generating embeddings...
+INFO:httpx:HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+INFO:app.services.embedding_service:Generated embedding for text of length 2361
+INFO:httpx:HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+INFO:app.services.embedding_service:Generated 2 embeddings in batch
+INFO:app.services.vector_service:Built new FAISS index with dimension 1536
+INFO:app.services.vector_service:Added 2 candidates to vector index
+INFO:app.services.vector_service:Found 2 similar candidates
+INFO:httpx:HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:app.services.ai_service:Generated fit summary for candidate ___Resume_Sanyukta_Tuti__
+INFO:httpx:HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:app.services.ai_service:Generated fit summary for candidate Naman Tyagi Cloud(1) (1)
+INFO:app.main:Search completed in 6.37 seconds
+INFO:     127.0.0.1:53832 - "POST /upload-search HTTP/1.1" 200 OK

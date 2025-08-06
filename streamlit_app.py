@@ -64,14 +64,15 @@ st.markdown("""
     
     /* Clean section headers */
     .clean-header {
-        font-size: 1.6rem;
+        font-size: 1.8rem;
         font-weight: 600;
         color: #2C3E50;
-        margin: 2rem 0 1rem 0;
-        padding: 1rem;
+        margin: 2.5rem 0 1.5rem 0;
+        padding: 1.2rem 1.5rem;
         background: linear-gradient(135deg, #F8F9FA 0%, #E9ECEF 100%);
-        border-left: 4px solid #3498DB;
-        border-radius: 0 8px 8px 0;
+        border-left: 5px solid #3498DB;
+        border-radius: 0 12px 12px 0;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
     }
     
     /* Similarity score styling */
@@ -512,7 +513,7 @@ def main():
         include_summary = st.checkbox("Include AI summaries", value=True)
     
     # Job Description
-    st.markdown('<div class="clean-header">Step 1: Job Description</div>', unsafe_allow_html=True)
+    st.markdown('<div class="clean-header">Job Description</div>', unsafe_allow_html=True)
     
     # Full width job title
     job_title = st.text_input(
@@ -547,30 +548,26 @@ def main():
     st.markdown("<br>", unsafe_allow_html=True)
     
     if job_complete:
-        # Success indicator
+        # Success indicator - more elegant and minimal
         st.markdown("""
-        <div style="background: linear-gradient(135deg, #D5F4E6 0%, #B8E6C1 100%); 
-                    border: 2px solid #27AE60; 
-                    border-radius: 12px; 
-                    padding: 1.5rem; 
-                    margin: 1.5rem 0; 
-                    color: #1E8449;
-                    box-shadow: 0 4px 8px rgba(39, 174, 96, 0.2);">
-            <div style="display: flex; align-items: center; gap: 10px;">
-                <div style="width: 20px; height: 20px; background: #27AE60; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 12px;">✓</div>
-                <strong style="font-size: 1.1rem;">Job details completed successfully!</strong>
-            </div>
-            <div style="margin-top: 0.5rem; opacity: 0.8;">Ready to proceed to candidate upload section</div>
+        <div style="background: #F8FFF8; 
+                    border-left: 4px solid #27AE60; 
+                    border-radius: 0 8px 8px 0; 
+                    padding: 1rem 1.5rem; 
+                    margin: 1rem 0; 
+                    color: #1E8449;">
+            <strong>Job description complete</strong> • Ready to upload candidate resumes
         </div>
         """, unsafe_allow_html=True)
         
-        # Prominent continue button
-        col_left, col_center, col_right = st.columns([1, 2, 1])
+        # Elegant continue button
+        st.markdown("<div style='margin: 1.5rem 0;'></div>", unsafe_allow_html=True)
+        col_left, col_center, col_right = st.columns([2, 1, 2])
         with col_center:
             continue_clicked = st.button(
-                "Continue to Candidate Upload →", 
+                "Continue →", 
                 key="proceed_button",
-                help="Click to proceed to the candidate upload section",
+                help="Proceed to upload candidate resumes",
                 type="primary",
                 use_container_width=True
             )
@@ -583,39 +580,33 @@ def main():
             st.stop()  # Don't show anything below until button is clicked
             
     else:
-        # Warning indicator with better styling
+        # Simple, clean warning indicator
         st.markdown("""
-        <div style="background: linear-gradient(135deg, #FEF9E7 0%, #FDF2C4 100%); 
-                    border: 2px solid #F39C12; 
-                    border-radius: 12px; 
-                    padding: 1.5rem; 
-                    margin: 1.5rem 0; 
-                    color: #D68910;
-                    box-shadow: 0 4px 8px rgba(243, 156, 18, 0.2);">
-            <div style="display: flex; align-items: center; gap: 10px;">
-                <div style="width: 20px; height: 20px; background: #F39C12; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 12px;">!</div>
-                <strong style="font-size: 1.1rem;">Please complete the job information above</strong>
-            </div>
-            <div style="margin-top: 0.5rem; opacity: 0.8;">Both job title and description are required to proceed</div>
+        <div style="background: #FFFAF0; 
+                    border-left: 4px solid #F39C12; 
+                    border-radius: 0 8px 8px 0; 
+                    padding: 1rem 1.5rem; 
+                    margin: 1rem 0; 
+                    color: #D68910;">
+            Please provide both job title and description to continue
         </div>
         """, unsafe_allow_html=True)
         st.stop()  # Don't show anything below until requirements are met
     
-    # Add section break
-    st.markdown("<br><br>", unsafe_allow_html=True)
+    # Section break
+    st.markdown("<div style='margin: 2rem 0;'></div>", unsafe_allow_html=True)
     
     # Method-specific input
     candidates = []
     
     if method == "File Upload":
-        st.markdown('<div class="clean-header">Step 2: Upload Candidate Resumes</div>', unsafe_allow_html=True)
-        st.markdown('<div class="step-indicator">Upload resume files to find the best matching candidates</div>', unsafe_allow_html=True)
+        st.markdown('<div class="clean-header">Upload Candidate Resumes</div>', unsafe_allow_html=True)
         
         uploaded_files = st.file_uploader(
-            "Choose resume files",
+            "Drop resume files here or click to browse",
             type=['pdf', 'docx', 'txt'],
             accept_multiple_files=True,
-            help="Upload PDF, DOCX, or TXT files containing candidate resumes"
+            help="Supported formats: PDF, DOCX, TXT • Upload multiple files at once"
         )
         
         if uploaded_files:
@@ -640,8 +631,7 @@ def main():
                     })
     
     else:  # Text Input
-        st.markdown('<div class="clean-header">Step 2: Enter Candidate Information</div>', unsafe_allow_html=True)
-        st.markdown('<div class="step-indicator">Manually enter candidate names and resume content</div>', unsafe_allow_html=True)
+        st.markdown('<div class="clean-header">Enter Candidate Information</div>', unsafe_allow_html=True)
         
         # Dynamic candidate input
         if "candidates_text" not in st.session_state:

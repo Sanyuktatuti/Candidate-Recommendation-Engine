@@ -46,7 +46,7 @@ Parse → Embed → L2-normalize → Cosine similarity → Rank top-K → (Optio
 <p align="center">
   <img src="docs/screenshots/resume-expander3.png" alt="resume-expander3" width="900">
   <br>
-  <em>Figure 6: Resume-expander.</em>
+  <em>Figure 6: Resume-expander Analysis and Insights Detailed.</em>
 </p>
 
 ### **How to Use:**

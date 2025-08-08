@@ -38,7 +38,7 @@ An AI-powered web application that matches the best candidates to job descriptio
 
 ---
 
-> **NEW**: **Automatic Smart Selection** - No manual service switching needed! Our app automatically uses the best available AI service, providing premium quality with intelligent fallback to ensure continuous operation.
+> **NEW**: **Automatic Smart Selection** - Our app automatically uses the best available AI service, providing premium quality with intelligent fallback to ensure continuous operation.
 
 ## Features
 

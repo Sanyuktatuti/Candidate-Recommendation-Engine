@@ -1225,17 +1225,9 @@ def main():
     # Configuration options
     st.sidebar.header("Configuration")
     
-    # Status indicator for active AI service tier
-    st.sidebar.markdown("### 🎯 Active Service Tier")
-    st.sidebar.caption("Automatic selection: Premium → Professional → Enhanced → Basic")
-    
     # Initialize unified services automatically
     embedding_service = UnifiedEmbeddingService()
     ai_service = UnifiedAIService()
-    
-    # Show active service info
-    service_info = embedding_service.get_info()
-    st.sidebar.info(f"**{service_info['method']}**\n{service_info['description']}")
     
 
     

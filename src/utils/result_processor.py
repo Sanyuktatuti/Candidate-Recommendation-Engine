@@ -68,11 +68,15 @@ class ResultProcessor:
         # Generate summaries if requested
         if include_summaries:
             for candidate in candidates:
-                candidate.fit_summary = self.ai_service.generate_fit_summary(
+                # Use new prompt hygiene system
+                summary_result = self.ai_service.generate_fit_summary(
                     job.full_text,
                     candidate.resume_text,
                     candidate.name
                 )
+                
+                # Extract summary text for backward compatibility
+                candidate.fit_summary = summary_result.get('summary', 'Analysis not available') if isinstance(summary_result, dict) else summary_result
         
         processing_time = time.time() - start_time
         

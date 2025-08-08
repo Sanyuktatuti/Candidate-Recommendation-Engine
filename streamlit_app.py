@@ -346,27 +346,28 @@ SUMMARY:"""
             return f"Unable to generate summary: {str(e)}"
 
 
-class FreeEmbeddingService:
-    """Professional-grade free embedding service with API hierarchy."""
+class UnifiedEmbeddingService:
+    """Unified embedding service with automatic hierarchy: OpenAI → Cohere → HF → TF-IDF."""
     
     def __init__(self):
         # API Keys from Streamlit Secrets (secure server-side storage)
         try:
+            self.OPENAI_API_KEY = st.secrets.get("OPENAI_API_KEY", "")
             self.COHERE_API_KEY = st.secrets.get("COHERE_API_KEY", "")
             self.HF_API_TOKEN = st.secrets.get("HF_API_TOKEN", "")
-            self.OPENAI_API_KEY = st.secrets.get("OPENAI_API_KEY", "")  # For reference
         except Exception:
             # Fallback if secrets not configured
+            self.OPENAI_API_KEY = ""
             self.COHERE_API_KEY = ""
             self.HF_API_TOKEN = ""
-            self.OPENAI_API_KEY = ""
         
         # Service initialization
         self.vectorizer = None
-        self.method = "api_enhanced"
-        self.dimension = 1024
+        self.method = "unified_hierarchy"
+        self.dimension = 1536  # OpenAI default
         self.sentence_model = None
         self.active_service = None
+        self.openai_client = None
         self.cohere_client = None
         self.hf_headers = None
         self.hf_api_url = None
@@ -375,44 +376,61 @@ class FreeEmbeddingService:
         self._init_service_hierarchy()
     
     def _init_service_hierarchy(self):
-        """Initialize services in order of preference: API → Local → Fallback."""
+        """Initialize services in priority order: OpenAI → Cohere → HuggingFace → TF-IDF."""
         services_tried = []
         
-        # TIER 1: Cohere API (Best professional quality)
+        # TIER 1: OpenAI API (Premium quality - highest priority)
+        if self._init_openai():
+            self.active_service = "openai"
+            self.method = "openai_embeddings"
+            self.dimension = 1536
+            st.sidebar.success("🚀 Premium Mode: OpenAI API Active")
+            return
+        else:
+            services_tried.append("OpenAI")
+        
+        # TIER 2: Cohere API (Excellent fallback)
         if self._init_cohere():
             self.active_service = "cohere"
             self.method = "cohere_embed_v3"
             self.dimension = 1024
-            st.sidebar.success("Professional Free Mode: Cohere API Active")
+            st.sidebar.success("✨ Professional Mode: Cohere API Active")
             return
         else:
             services_tried.append("Cohere")
         
-        # TIER 2: Hugging Face Inference API (Great backup)
+        # TIER 3: Hugging Face Inference API (Good fallback)
         if self._init_huggingface():
             self.active_service = "huggingface"
             self.method = "hf_inference_api"
             self.dimension = 384
-            st.sidebar.success("Professional Free Mode: Hugging Face API Active")
+            st.sidebar.success("⚡ Enhanced Mode: Hugging Face API Active")
             return
         else:
             services_tried.append("Hugging Face")
-        
-        # TIER 3: Local SentenceTransformers (Good local option)
-        if self._init_sentence_transformers():
-            self.active_service = "sentence_transformers"
-            self.method = "local_transformers"
-            self.dimension = 384
-            st.sidebar.success("Enhanced Free Mode: SentenceTransformers Active")
-            return
-        else:
-            services_tried.append("SentenceTransformers")
         
         # TIER 4: Enhanced TF-IDF (Always works)
         self.active_service = "tfidf"
         self.method = "enhanced_tfidf"
         self.dimension = 2000
-        st.sidebar.info(f"Free Mode: Enhanced TF-IDF Active (tried: {', '.join(services_tried)})")
+        st.sidebar.info(f"📊 Basic Mode: Enhanced TF-IDF Active (tried: {', '.join(services_tried)})")
+    
+    def _init_openai(self) -> bool:
+        """Initialize OpenAI API."""
+        try:
+            if not self.OPENAI_API_KEY or self.OPENAI_API_KEY == "":
+                return False
+            
+            self.openai_client = openai.OpenAI(api_key=self.OPENAI_API_KEY)
+            
+            # Quick test
+            test_response = self.openai_client.embeddings.create(
+                input="test",
+                model="text-embedding-ada-002"
+            )
+            return True
+        except Exception as e:
+            return False
     
     def _init_cohere(self) -> bool:
         """Initialize Cohere API."""
@@ -468,7 +486,9 @@ class FreeEmbeddingService:
         """Get embedding using the best available service."""
         processed_text = self._preprocess_text_advanced(text)
         
-        if self.active_service == "cohere":
+        if self.active_service == "openai":
+            return self._get_openai_embedding(processed_text)
+        elif self.active_service == "cohere":
             return self._get_cohere_embedding(processed_text)
         elif self.active_service == "huggingface":
             return self._get_hf_embedding(processed_text)
@@ -476,6 +496,17 @@ class FreeEmbeddingService:
             return self._get_sentence_embedding(processed_text)
         else:
             return self._get_tfidf_embedding(processed_text)
+    
+    def _get_openai_embedding(self, text: str) -> List[float]:
+        """Get OpenAI embedding."""
+        try:
+            response = self.openai_client.embeddings.create(
+                input=text,
+                model="text-embedding-ada-002"
+            )
+            return response.data[0].embedding
+        except Exception as e:
+            return [0.0] * self.dimension
     
     def _get_cohere_embedding(self, text: str) -> List[float]:
         """Get Cohere embedding."""
@@ -528,7 +559,9 @@ class FreeEmbeddingService:
         """Get embeddings for multiple texts."""
         processed_texts = [self._preprocess_text_advanced(text) for text in texts]
         
-        if self.active_service == "cohere":
+        if self.active_service == "openai":
+            return self._get_openai_embeddings_batch(processed_texts)
+        elif self.active_service == "cohere":
             return self._get_cohere_embeddings_batch(processed_texts)
         elif self.active_service == "huggingface":
             return self._get_hf_embeddings_batch(processed_texts)
@@ -536,6 +569,20 @@ class FreeEmbeddingService:
             return self._get_sentence_embeddings_batch(processed_texts)
         else:
             return self._get_tfidf_embeddings_batch(processed_texts)
+    
+    def _get_openai_embeddings_batch(self, texts: List[str]) -> List[List[float]]:
+        """Get OpenAI embeddings for batch."""
+        try:
+            embeddings = []
+            for text in texts:
+                response = self.openai_client.embeddings.create(
+                    input=text,
+                    model="text-embedding-ada-002"
+                )
+                embeddings.append(response.data[0].embedding)
+            return embeddings
+        except Exception as e:
+            return [[0.0] * self.dimension for _ in texts]
     
     def _get_cohere_embeddings_batch(self, texts: List[str]) -> List[List[float]]:
         """Get Cohere embeddings for batch."""
@@ -591,7 +638,7 @@ class FreeEmbeddingService:
     
     def get_job_and_candidate_embeddings(self, job_text: str, candidate_texts: List[str]) -> tuple:
         """Get embeddings for job and candidates together."""
-        if self.active_service in ["cohere", "huggingface", "sentence_transformers"]:
+        if self.active_service in ["openai", "cohere", "huggingface", "sentence_transformers"]:
             # For API services, process separately
             job_embedding = self.get_embedding(job_text)
             candidate_embeddings = [self.get_embedding(text) for text in candidate_texts]
@@ -640,16 +687,20 @@ class FreeEmbeddingService:
     def get_info(self) -> dict:
         """Get service information."""
         service_info = {
+            "openai": {
+                "method": "OpenAI text-embedding-ada-002",
+                "description": "Premium-grade semantic embeddings with industry-leading accuracy and understanding"
+            },
             "cohere": {
-                "method": "Cohere Embed v3.0 API + Advanced Preprocessing",
-                "description": "Professional-grade semantic embeddings using Cohere's enterprise API (1000 free calls/month)"
+                "method": "Cohere Embed v3.0 API",
+                "description": "Professional-grade semantic embeddings with excellent quality and multilingual support"
             },
             "huggingface": {
-                "method": "Hugging Face Inference API + Advanced Preprocessing", 
-                "description": "Production-quality semantic embeddings via HF managed endpoints (30k free calls/month)"
+                "method": "Hugging Face Inference API", 
+                "description": "Production-quality semantic embeddings via managed transformer endpoints"
             },
             "sentence_transformers": {
-                "method": "SentenceTransformers + Advanced Preprocessing",
+                "method": "SentenceTransformers (Local)",
                 "description": "High-quality semantic similarity using local transformer models"
             },
             "tfidf": {
@@ -661,10 +712,23 @@ class FreeEmbeddingService:
         return service_info.get(self.active_service, service_info["tfidf"])
 
 
-class FreeAIService:
-    """Enhanced free AI service with sophisticated analysis."""
+class UnifiedAIService:
+    """Unified AI service with automatic hierarchy: OpenAI → Enhanced Analysis."""
     
     def __init__(self):
+        # Try to get OpenAI API key for premium summaries
+        try:
+            self.openai_api_key = st.secrets.get("OPENAI_API_KEY", "")
+        except:
+            self.openai_api_key = ""
+        
+        self.openai_client = None
+        if self.openai_api_key:
+            try:
+                self.openai_client = openai.OpenAI(api_key=self.openai_api_key)
+            except:
+                self.openai_client = None
+        
         self.job_domains = {
             'data': ['data', 'analytics', 'scientist', 'analysis', 'statistics', 'research'],
             'engineering': ['software', 'engineer', 'developer', 'programming', 'coding', 'technical'],
@@ -677,37 +741,84 @@ class FreeAIService:
         }
     
     def generate_fit_summary(self, job_description: str, resume_text: str, candidate_name: str) -> str:
-        """Generate sophisticated analysis-based summary."""
+        """Generate candidate fit summary using OpenAI or enhanced analysis."""
+        # Try OpenAI first for premium quality
+        if self.openai_client:
+            try:
+                return self._generate_openai_summary(job_description, resume_text, candidate_name)
+            except Exception:
+                pass  # Fall back to enhanced analysis
+        
+        # Fallback to enhanced analysis
         try:
-            # Comprehensive analysis
-            analysis = self._analyze_candidate_fit(job_description, resume_text, candidate_name)
-            
-            # Generate contextual summary
-            summary_parts = []
-            
-            # Core fit assessment
-            core_fit = self._assess_core_fit(analysis)
-            summary_parts.append(core_fit)
-            
-            # Skills analysis
-            skills_analysis = self._analyze_skills_match(analysis)
-            if skills_analysis:
-                summary_parts.append(skills_analysis)
-            
-            # Experience analysis
-            exp_analysis = self._analyze_experience_match(analysis)
-            if exp_analysis:
-                summary_parts.append(exp_analysis)
-            
-            # Recommendations
-            recommendations = self._generate_recommendations(analysis)
-            if recommendations:
-                summary_parts.append(recommendations)
-            
-            return " ".join(summary_parts)
-            
+            return self._generate_enhanced_summary(job_description, resume_text, candidate_name)
         except Exception as e:
             return f"{candidate_name} demonstrates relevant qualifications for this position. The profile shows professional experience that aligns with several key requirements. Recommend detailed interview to assess specific fit and potential contribution to the role."
+    
+    def _generate_openai_summary(self, job_description: str, resume_text: str, candidate_name: str) -> str:
+        """Generate OpenAI-powered summary."""
+        # Truncate texts if too long
+        job_desc = job_description[:2000] + "..." if len(job_description) > 2000 else job_description
+        resume = resume_text[:3000] + "..." if len(resume_text) > 3000 else resume_text
+        
+        prompt = f"""
+Analyze how well this candidate fits the job requirements. Provide a concise, professional summary.
+
+JOB DESCRIPTION:
+{job_desc}
+
+CANDIDATE RESUME:
+{resume}
+
+Provide a 2-3 sentence analysis covering:
+1. Key qualifications match
+2. Relevant experience/skills
+3. Overall fit assessment
+
+Write in a professional, positive tone. Be specific about qualifications.
+
+SUMMARY:"""
+        
+        response = self.openai_client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": "You are an expert HR analyst."},
+                {"role": "user", "content": prompt}
+            ],
+            max_tokens=200,
+            temperature=0.7
+        )
+        
+        return response.choices[0].message.content.strip()
+    
+    def _generate_enhanced_summary(self, job_description: str, resume_text: str, candidate_name: str) -> str:
+        """Generate enhanced analysis-based summary."""
+        # Comprehensive analysis
+        analysis = self._analyze_candidate_fit(job_description, resume_text, candidate_name)
+        
+        # Generate contextual summary
+        summary_parts = []
+        
+        # Core fit assessment
+        core_fit = self._assess_core_fit(analysis)
+        summary_parts.append(core_fit)
+        
+        # Skills analysis
+        skills_analysis = self._analyze_skills_match(analysis)
+        if skills_analysis:
+            summary_parts.append(skills_analysis)
+        
+        # Experience analysis
+        exp_analysis = self._analyze_experience_match(analysis)
+        if exp_analysis:
+            summary_parts.append(exp_analysis)
+        
+        # Recommendations
+        recommendations = self._generate_recommendations(analysis)
+        if recommendations:
+            summary_parts.append(recommendations)
+        
+        return " ".join(summary_parts)
     
     def _analyze_candidate_fit(self, job_desc: str, resume: str, name: str) -> dict:
         """Comprehensive candidate analysis."""
@@ -1114,87 +1225,19 @@ def main():
     # Configuration options
     st.sidebar.header("Configuration")
     
-    # Choose AI service
-    ai_service_option = st.sidebar.selectbox(
-        "AI Service",
-        ["OpenAI (Recommended - Best Quality)", "Free Mode (Good Alternative)"],
-        help="OpenAI provides superior semantic understanding and professional summaries. Free mode is a solid backup option."
-    )
+    # Status indicator for active AI service tier
+    st.sidebar.markdown("### 🎯 Active Service Tier")
+    st.sidebar.caption("Automatic selection: Premium → Professional → Enhanced → Basic")
     
-    use_openai = "OpenAI" in ai_service_option
-    api_key = None
+    # Initialize unified services automatically
+    embedding_service = UnifiedEmbeddingService()
+    ai_service = UnifiedAIService()
     
-    if use_openai:
-        # Try to get API key from secrets first, then fallback to user input
-        try:
-            api_key = st.secrets.get("OPENAI_API_KEY", "")
-        except:
-            api_key = ""
-            
-        if not api_key:
-            api_key = st.sidebar.text_input(
-                "OpenAI API Key",
-                type="password",
-                help="Enter your OpenAI API key. Get one at https://platform.openai.com/api-keys"
-            )
-        else:
-            st.sidebar.success("✅ OpenAI API Key loaded from secrets")
-        
-        if not api_key:
-            st.warning("⚠️ Please enter your OpenAI API key in the sidebar to use the recommended OpenAI service.")
-            st.info("""
-            **Why OpenAI is Recommended:**
-            - **Superior Quality**: Best-in-class semantic understanding
-            - **Professional Summaries**: Human-like analysis of candidate fit
-            - **Proven Accuracy**: Industry-leading AI for HR applications
-            - **Cost**: Only ~$0.002 per candidate analysis
-            
-            **🔗 Get Started:**
-            1. Get an OpenAI API key from https://platform.openai.com/api-keys
-            2. Enter it in the sidebar above
-            
-            **Alternative**: Switch to "Free Mode" above if you prefer no-cost operation (good quality, but not as sophisticated)
-            """)
-            return
-    else:
-        # Free mode selected
-        st.sidebar.success("Enhanced Free Mode Activated")
-        st.sidebar.info("""
-        **Enhanced Free Mode Features:**
-        - Advanced semantic analysis with SentenceTransformers
-        - Professional-grade text preprocessing
-        - Domain-specific skill extraction
-        - Sophisticated scoring algorithms
-        - Comprehensive candidate assessments
-        - Works completely offline (no API needed)
-        
-        **Quality**: Professional-grade analysis competitive 
-        with paid services for most hiring scenarios.
-        """)
-        
-        # Show which free method is being used
-        free_embedding_service = FreeEmbeddingService()
-        method_info = free_embedding_service.get_info()
-        st.sidebar.write(f"**Method:** {method_info['method']}")
-        st.sidebar.write(f"**Quality:** {method_info['description']}")
+    # Show active service info
+    service_info = embedding_service.get_info()
+    st.sidebar.info(f"**{service_info['method']}**\n{service_info['description']}")
     
-    # Initialize services based on mode
-    try:
-        if use_openai:
-            embedding_service = EmbeddingService(api_key)
-            ai_service = AIService(api_key)
-            st.sidebar.success("OpenAI connection ready!")
-        else:
-            # Use free services
-            embedding_service = FreeEmbeddingService()
-            ai_service = FreeAIService()
-            st.sidebar.success("Free AI services ready!")
-    except Exception as e:
-        if use_openai:
-            st.sidebar.error(f"OpenAI connection failed: {e}")
-        else:
-            st.sidebar.error(f"Free services failed: {e}")
-        return
+
     
     # Sidebar settings
     with st.sidebar:
@@ -1391,22 +1434,24 @@ def main():
                 progress_bar.progress(10)
                 candidate_texts = [c['resume_text'] for c in candidates]
                 
-                # For free mode, use special method that fits TF-IDF on all texts together
-                if not use_openai and hasattr(embedding_service, 'get_job_and_candidate_embeddings'):
+                # Use the unified embedding service
+                progress_bar.progress(15)
+                if hasattr(embedding_service, 'get_job_and_candidate_embeddings'):
                     progress_bar.progress(20)
                     job_embedding, candidate_embeddings = embedding_service.get_job_and_candidate_embeddings(
                         job_text, candidate_texts
                     )
                 else:
-                    # OpenAI mode - get embeddings separately
-                    progress_bar.progress(15)
+                    # Fallback to individual embeddings
                     job_embedding = embedding_service.get_embedding(job_text)
                     progress_bar.progress(25)
                     candidate_embeddings = embedding_service.get_embeddings_batch(candidate_texts)
                 
                 # Compute similarities
                 progress_bar.progress(60)
-                similarities = compute_similarity_scores(job_embedding, candidate_embeddings, is_free_mode=not use_openai)
+                # Check if we're using a basic service (TF-IDF) for score adjustment
+                is_basic_mode = embedding_service.active_service == "tfidf"
+                similarities = compute_similarity_scores(job_embedding, candidate_embeddings, is_free_mode=is_basic_mode)
                 
                 # Generate summaries
                 summaries = []

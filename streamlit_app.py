@@ -384,7 +384,7 @@ class UnifiedEmbeddingService:
             self.active_service = "openai"
             self.method = "openai_embeddings"
             self.dimension = 1536
-            st.sidebar.success("🚀 Premium Mode: OpenAI API Active")
+            #st.sidebar.success("🚀 Premium Mode: OpenAI API Active")
             return
         else:
             services_tried.append("OpenAI")
@@ -394,7 +394,7 @@ class UnifiedEmbeddingService:
             self.active_service = "cohere"
             self.method = "cohere_embed_v3"
             self.dimension = 1024
-            st.sidebar.success("✨ Professional Mode: Cohere API Active")
+            #st.sidebar.success("✨ Professional Mode: Cohere API Active")
             return
         else:
             services_tried.append("Cohere")
@@ -404,7 +404,7 @@ class UnifiedEmbeddingService:
             self.active_service = "huggingface"
             self.method = "hf_inference_api"
             self.dimension = 384
-            st.sidebar.success("⚡ Enhanced Mode: Hugging Face API Active")
+            #st.sidebar.success("⚡ Enhanced Mode: Hugging Face API Active")
             return
         else:
             services_tried.append("Hugging Face")
@@ -413,7 +413,7 @@ class UnifiedEmbeddingService:
         self.active_service = "tfidf"
         self.method = "enhanced_tfidf"
         self.dimension = 2000
-        st.sidebar.info(f"📊 Basic Mode: Enhanced TF-IDF Active (tried: {', '.join(services_tried)})")
+        #st.sidebar.info(f"📊 Basic Mode: Enhanced TF-IDF Active (tried: {', '.join(services_tried)})")
     
     def _init_openai(self) -> bool:
         """Initialize OpenAI API."""

@@ -2,9 +2,18 @@
 Unified AI service with automatic hierarchy: OpenAI → Enhanced Analysis.
 """
 
+import os
 import re
 from typing import List, Dict, Any
 import streamlit as st
+
+# Load environment variables for local development
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    # dotenv not available, that's fine
+    pass
 
 try:
     import openai
@@ -17,11 +26,16 @@ class UnifiedAIService:
     
     def __init__(self):
         """Initialize the AI service."""
-        # Try to get OpenAI API key for premium summaries
-        try:
-            self.openai_api_key = st.secrets.get("OPENAI_API_KEY", "")
-        except Exception:
-            self.openai_api_key = ""
+        # Priority 1: Environment variables (for local development)
+        self.openai_api_key = os.getenv("OPENAI_API_KEY", "")
+        
+        # Priority 2: Streamlit secrets (for cloud deployment) - only if env var is empty
+        if not self.openai_api_key:
+            try:
+                self.openai_api_key = st.secrets.get("OPENAI_API_KEY", "")
+            except Exception:
+                # No secrets available, use empty string (will fallback to enhanced analysis)
+                self.openai_api_key = ""
         
         self.openai_client = None
         if self.openai_api_key and openai:

@@ -2,10 +2,19 @@
 Unified embedding service with automatic hierarchy: OpenAI → Cohere → HF → TF-IDF.
 """
 
+import os
 import re
 import time
 from typing import List, Dict, Any, Tuple
 import streamlit as st
+
+# Load environment variables for local development
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    # dotenv not available, that's fine
+    pass
 
 # AI and ML imports
 try:
@@ -49,16 +58,21 @@ class UnifiedEmbeddingService:
         self._init_service_hierarchy()
     
     def _load_api_keys(self) -> None:
-        """Load API keys from Streamlit secrets."""
-        try:
-            self.OPENAI_API_KEY = st.secrets.get("OPENAI_API_KEY", "")
-            self.COHERE_API_KEY = st.secrets.get("COHERE_API_KEY", "")
-            self.HF_API_TOKEN = st.secrets.get("HF_API_TOKEN", "")
-        except Exception:
-            # Fallback if secrets not configured
-            self.OPENAI_API_KEY = ""
-            self.COHERE_API_KEY = ""
-            self.HF_API_TOKEN = ""
+        """Load API keys prioritizing environment variables (local) then Streamlit secrets (cloud)."""
+        # Priority 1: Environment variables (for local development)
+        self.OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
+        self.COHERE_API_KEY = os.getenv("COHERE_API_KEY", "")
+        self.HF_API_TOKEN = os.getenv("HF_API_TOKEN", "")
+        
+        # Priority 2: Streamlit secrets (for cloud deployment) - only if env vars are empty
+        if not any([self.OPENAI_API_KEY, self.COHERE_API_KEY, self.HF_API_TOKEN]):
+            try:
+                self.OPENAI_API_KEY = st.secrets.get("OPENAI_API_KEY", "")
+                self.COHERE_API_KEY = st.secrets.get("COHERE_API_KEY", "")
+                self.HF_API_TOKEN = st.secrets.get("HF_API_TOKEN", "")
+            except Exception:
+                # No secrets available, use empty strings (will fallback to TF-IDF)
+                pass
     
     def _init_service_hierarchy(self) -> None:
         """Initialize services in priority order: OpenAI → Cohere → HuggingFace → TF-IDF."""

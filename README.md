@@ -302,21 +302,25 @@ lsof -i :8501
 
 ### Using the Web Interface
 
-1. **Enter Job Details**: 
+1. **Enter Job Details**:
+
    - Job title and detailed job description
    - Requirements and preferred qualifications
    - Click "Continue to Upload Resumes" to proceed
 
 2. **Upload Candidate Resumes**:
+
    - **File Upload**: Upload multiple PDF, DOCX, or TXT resume files
    - **Text Input**: Manually paste resume text directly
    - Mix and match both methods as needed
 
 3. **Configure Search (Optional)**:
+
    - Adjust number of top candidates to show (default: 5)
    - Set search parameters for fine-tuning
 
-4. **Automatic AI Processing**: 
+4. **Automatic AI Processing**:
+
    - App automatically selects best available AI service tier
    - No configuration needed - seamless premium experience
 
@@ -339,7 +343,7 @@ HF_API_TOKEN=your_hf_token_here            # Enhanced tier (BGE/E5/GTE models)
 # Application Settings (optional - sensible defaults provided)
 DEBUG=True                                 # Enable debug mode
 API_HOST=0.0.0.0                          # Host for local development
-API_PORT=8000                             # Port for API services  
+API_PORT=8000                             # Port for API services
 STREAMLIT_HOST=0.0.0.0                    # Streamlit host
 STREAMLIT_PORT=8501                       # Streamlit port
 ```
@@ -462,6 +466,7 @@ pytest --cov=app tests/
 ### Streamlit Cloud (Current)
 
 The application is already deployed on **Streamlit Community Cloud**:
+
 - **Live Demo**: https://candidate-recommendation-engine-ks3gdxgzcjfto3624t55v2.streamlit.app/
 - **Automatic Updates**: Syncs with GitHub repository changes
 - **Premium Features**: Uses configured API keys for best experience

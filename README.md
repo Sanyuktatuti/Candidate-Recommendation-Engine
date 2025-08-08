@@ -9,15 +9,18 @@ An AI-powered web application that matches the best candidates to job descriptio
 ### **How to Use:**
 
 1. **Smart AI Selection:**
+
    - **Automatic Mode**: App automatically uses the best available AI service
    - **No Setup Needed**: Premium features work instantly with our API keys
    - **Intelligent Fallback**: Seamlessly switches between services for optimal performance
 
 2. **Enter Job Details:**
+
    - Job title and detailed job description
    - Requirements and preferred skills
 
 3. **Upload Resumes:**
+
    - Upload multiple PDF, DOCX, or TXT files
    - Or paste resume text directly
 
@@ -26,9 +29,10 @@ An AI-powered web application that matches the best candidates to job descriptio
    - Read AI-generated fit summaries
    - Analyze charts and detailed breakdowns
 
-**AI Service Tiers (Automatic):**
+**AI Service Tiers (Automatic based on the availability of the models):**
+
 - **🚀 Premium**: OpenAI API (Best quality)
-- **✨ Professional**: Cohere API (Excellent quality)  
+- **✨ Professional**: Cohere API (Excellent quality)
 - **⚡ Enhanced**: Hugging Face API (Good quality)
 - **📊 Basic**: TF-IDF Analysis (Always available)
 
@@ -39,7 +43,7 @@ An AI-powered web application that matches the best candidates to job descriptio
 ## Features
 
 - **Automatic AI Service Selection**: Intelligent hierarchy - Premium → Professional → Enhanced → Basic
-- **Smart Matching**: Uses AI embeddings and cosine similarity for semantic job-candidate matching  
+- **Smart Matching**: Uses AI embeddings and cosine similarity for semantic job-candidate matching
 - **Multi-Tier AI Integration**: OpenAI, Cohere, Hugging Face APIs with intelligent fallback
 - **Zero Setup Required**: Premium features work instantly with pre-configured API access
 - **Multiple Input Methods**: Upload resume files (PDF/DOCX/TXT) or paste text directly
@@ -68,8 +72,8 @@ An AI-powered web application that matches the best candidates to job descriptio
 ### Tech Stack
 
 - **Frontend**: Streamlit with Plotly for interactive charts
-- **Backend**: FastAPI with async/await support  
-- **ML/AI**: 
+- **Backend**: FastAPI with async/await support
+- **ML/AI**:
   - **Premium**: OpenAI (embeddings + GPT)
   - **Professional**: Cohere (Embed v3 + Command R)
   - **Enhanced**: Hugging Face Inference API
@@ -106,14 +110,15 @@ Edit `.env` and add your API keys (optional - app works without them):
 
 ```env
 OPENAI_API_KEY=your_openai_api_key_here    # Optional: For premium quality
-COHERE_API_KEY=your_cohere_api_key_here    # Optional: For professional quality  
+COHERE_API_KEY=your_cohere_api_key_here    # Optional: For professional quality
 HF_API_TOKEN=your_hf_token_here            # Optional: For enhanced quality
 DEBUG=True
 ```
 
 > **Note**: All API keys are optional! The app automatically uses our premium services if you don't provide your own keys. If you want to use your own APIs, get keys at:
+>
 > - OpenAI: [platform.openai.com/api-keys](https://platform.openai.com/api-keys)
-> - Cohere: [dashboard.cohere.com/api-keys](https://dashboard.cohere.com/api-keys)  
+> - Cohere: [dashboard.cohere.com/api-keys](https://dashboard.cohere.com/api-keys)
 > - Hugging Face: [huggingface.co/settings/tokens](https://huggingface.co/settings/tokens)
 
 ## Automatic AI Service Hierarchy
@@ -276,7 +281,7 @@ tail -f streamlit.log
 4. **Analysis**: Click "Analyze Candidates" to get:
    - Similarity scores (0-100%)
    - Ranked candidate list
-   - AI-generated fit explanations  
+   - AI-generated fit explanations
    - Interactive charts and metrics
    - Service tier indicator showing which AI is active
 
@@ -321,7 +326,7 @@ Key settings in `config.py`:
 ```python
 # API Keys (all optional - app works without them)
 OPENAI_API_KEY = ""                        # Premium tier
-COHERE_API_KEY = ""                        # Professional tier  
+COHERE_API_KEY = ""                        # Professional tier
 HF_API_TOKEN = ""                          # Enhanced tier
 
 # AI Models (automatic selection)
@@ -553,6 +558,7 @@ tail -f streamlit.log
 - **Best For**: Testing, demos, offline environments
 
 ### **Universal Features**
+
 - **File Processing**: ~200ms per PDF page (all tiers)
 - **Document Upload**: Supports multiple PDF/DOCX/TXT files simultaneously
 - **Similarity Scores**: Range from 0-100% with tier-appropriate explanations

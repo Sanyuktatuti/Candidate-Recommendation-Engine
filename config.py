@@ -10,8 +10,10 @@ from pydantic import Field
 class Settings(BaseSettings):
     """Application settings with environment variable support."""
     
-    # OpenAI API Configuration
-    openai_api_key: str = Field(..., env="OPENAI_API_KEY")
+    # API Configuration
+    openai_api_key: str = Field("", env="OPENAI_API_KEY")  # Optional
+    cohere_api_key: str = Field("", env="COHERE_API_KEY")  # Optional
+    hf_api_token: str = Field("", env="HF_API_TOKEN")  # Optional
     
     # Application Settings
     app_name: str = Field("Candidate Recommendation Engine", env="APP_NAME")

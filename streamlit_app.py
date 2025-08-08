@@ -1223,7 +1223,7 @@ def main():
     """, unsafe_allow_html=True)
     
     # Configuration options
-    st.sidebar.header("Configuration")
+    # st.sidebar.header("Configuration")
     
     # Initialize unified services automatically
     embedding_service = UnifiedEmbeddingService()

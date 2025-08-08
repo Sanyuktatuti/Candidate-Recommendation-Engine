@@ -23,6 +23,14 @@ try:
 except ImportError:
     TORCH_AVAILABLE = False
 
+# Professional API clients for enhanced free service
+import requests
+import json
+import time
+try:
+    import cohere
+except ImportError:
+    cohere = None
 
 class FreeEmbeddingService:
     """

@@ -28,6 +28,15 @@ import openai
 import faiss
 from sklearn.metrics.pairwise import cosine_similarity
 
+# Professional API clients for enhanced free service
+import requests
+import json
+import time
+try:
+    import cohere
+except ImportError:
+    cohere = None
+
 # Set page config
 st.set_page_config(
     page_title="Candidate Recommendation Engine",
@@ -245,6 +254,487 @@ SUMMARY:"""
             return response.choices[0].message.content.strip()
         except Exception as e:
             return f"Unable to generate summary: {str(e)}"
+
+
+class FreeEmbeddingService:
+    """Professional-grade free embedding service with API hierarchy."""
+    
+    def __init__(self):
+        # API Keys - EDIT THESE WITH YOUR ACTUAL KEYS
+        self.COHERE_API_KEY = "YOUR_COHERE_API_KEY_HERE"  # Get free key from cohere.ai
+        self.HF_API_TOKEN = "YOUR_HUGGINGFACE_TOKEN_HERE"  # Get free token from huggingface.co
+        
+        # Service initialization
+        self.vectorizer = None
+        self.method = "api_enhanced"
+        self.dimension = 1024
+        self.sentence_model = None
+        self.active_service = None
+        self.cohere_client = None
+        self.hf_headers = None
+        self.hf_api_url = None
+        
+        # Initialize service hierarchy
+        self._init_service_hierarchy()
+    
+    def _init_service_hierarchy(self):
+        """Initialize services in order of preference: API → Local → Fallback."""
+        services_tried = []
+        
+        # TIER 1: Cohere API (Best professional quality)
+        if self._init_cohere():
+            self.active_service = "cohere"
+            self.method = "cohere_embed_v3"
+            self.dimension = 1024
+            st.sidebar.success("Professional Free Mode: Cohere API Active")
+            return
+        else:
+            services_tried.append("Cohere")
+        
+        # TIER 2: Hugging Face Inference API (Great backup)
+        if self._init_huggingface():
+            self.active_service = "huggingface"
+            self.method = "hf_inference_api"
+            self.dimension = 384
+            st.sidebar.success("Professional Free Mode: Hugging Face API Active")
+            return
+        else:
+            services_tried.append("Hugging Face")
+        
+        # TIER 3: Local SentenceTransformers (Good local option)
+        if self._init_sentence_transformers():
+            self.active_service = "sentence_transformers"
+            self.method = "local_transformers"
+            self.dimension = 384
+            st.sidebar.success("Enhanced Free Mode: SentenceTransformers Active")
+            return
+        else:
+            services_tried.append("SentenceTransformers")
+        
+        # TIER 4: Enhanced TF-IDF (Always works)
+        self.active_service = "tfidf"
+        self.method = "enhanced_tfidf"
+        self.dimension = 2000
+        st.sidebar.info(f"Free Mode: Enhanced TF-IDF Active (tried: {', '.join(services_tried)})")
+    
+    def _init_cohere(self) -> bool:
+        """Initialize Cohere API."""
+        try:
+            if self.COHERE_API_KEY == "YOUR_COHERE_API_KEY_HERE":
+                return False
+            
+            if cohere is None:
+                return False
+                
+            self.cohere_client = cohere.Client(self.COHERE_API_KEY)
+            
+            # Quick test
+            test_response = self.cohere_client.embed(
+                texts=["test"],
+                model="embed-english-v3.0",
+                input_type="search_document"
+            )
+            return True
+        except Exception as e:
+            return False
+    
+    def _init_huggingface(self) -> bool:
+        """Initialize Hugging Face Inference API."""
+        try:
+            if self.HF_API_TOKEN == "YOUR_HUGGINGFACE_TOKEN_HERE":
+                return False
+            
+            self.hf_headers = {"Authorization": f"Bearer {self.HF_API_TOKEN}"}
+            self.hf_api_url = "https://api-inference.huggingface.co/pipeline/feature-extraction/sentence-transformers/all-MiniLM-L6-v2"
+            
+            # Test the API
+            response = requests.post(
+                self.hf_api_url,
+                headers=self.hf_headers,
+                json={"inputs": "test"},
+                timeout=10
+            )
+            return response.status_code == 200
+        except Exception as e:
+            return False
+    
+    def _init_sentence_transformers(self) -> bool:
+        """Initialize local SentenceTransformers."""
+        try:
+            from sentence_transformers import SentenceTransformer
+            self.sentence_model = SentenceTransformer('all-MiniLM-L6-v2')
+            return True
+        except ImportError:
+            return False
+    
+    def get_embedding(self, text: str) -> List[float]:
+        """Get embedding using the best available service."""
+        processed_text = self._preprocess_text_advanced(text)
+        
+        if self.active_service == "cohere":
+            return self._get_cohere_embedding(processed_text)
+        elif self.active_service == "huggingface":
+            return self._get_hf_embedding(processed_text)
+        elif self.active_service == "sentence_transformers":
+            return self._get_sentence_embedding(processed_text)
+        else:
+            return self._get_tfidf_embedding(processed_text)
+    
+    def _get_cohere_embedding(self, text: str) -> List[float]:
+        """Get Cohere embedding."""
+        try:
+            response = self.cohere_client.embed(
+                texts=[text],
+                model="embed-english-v3.0",
+                input_type="search_document"
+            )
+            return response.embeddings[0]
+        except Exception as e:
+            return [0.0] * self.dimension
+    
+    def _get_hf_embedding(self, text: str) -> List[float]:
+        """Get Hugging Face embedding."""
+        try:
+            response = requests.post(
+                self.hf_api_url,
+                headers=self.hf_headers,
+                json={"inputs": text},
+                timeout=30
+            )
+            if response.status_code == 200:
+                return response.json()
+            else:
+                return [0.0] * self.dimension
+        except Exception as e:
+            return [0.0] * self.dimension
+    
+    def _get_sentence_embedding(self, text: str) -> List[float]:
+        """Get SentenceTransformer embedding."""
+        try:
+            embedding = self.sentence_model.encode(text)
+            return embedding.tolist()
+        except Exception as e:
+            return [0.0] * self.dimension
+    
+    def _get_tfidf_embedding(self, text: str) -> List[float]:
+        """Get TF-IDF embedding (fallback)."""
+        if not hasattr(self, '_fitted') or not self._fitted:
+            return [0.0] * self.dimension
+        
+        try:
+            tfidf_matrix = self.vectorizer.transform([text])
+            return tfidf_matrix.toarray()[0].tolist()
+        except:
+            return [0.0] * self.dimension
+    
+    def get_embeddings_batch(self, texts: List[str]) -> List[List[float]]:
+        """Get embeddings for multiple texts."""
+        processed_texts = [self._preprocess_text_advanced(text) for text in texts]
+        
+        if self.active_service == "cohere":
+            return self._get_cohere_embeddings_batch(processed_texts)
+        elif self.active_service == "huggingface":
+            return self._get_hf_embeddings_batch(processed_texts)
+        elif self.active_service == "sentence_transformers":
+            return self._get_sentence_embeddings_batch(processed_texts)
+        else:
+            return self._get_tfidf_embeddings_batch(processed_texts)
+    
+    def _get_cohere_embeddings_batch(self, texts: List[str]) -> List[List[float]]:
+        """Get Cohere embeddings for batch."""
+        try:
+            response = self.cohere_client.embed(
+                texts=texts,
+                model="embed-english-v3.0",
+                input_type="search_document"
+            )
+            return response.embeddings
+        except Exception as e:
+            return [[0.0] * self.dimension for _ in texts]
+    
+    def _get_hf_embeddings_batch(self, texts: List[str]) -> List[List[float]]:
+        """Get HF embeddings for batch (with rate limiting)."""
+        embeddings = []
+        for text in texts:
+            embedding = self._get_hf_embedding(text)
+            embeddings.append(embedding)
+            time.sleep(0.1)  # Rate limiting for free tier
+        return embeddings
+    
+    def _get_sentence_embeddings_batch(self, texts: List[str]) -> List[List[float]]:
+        """Get SentenceTransformer embeddings for batch."""
+        try:
+            embeddings = self.sentence_model.encode(texts)
+            return [emb.tolist() for emb in embeddings]
+        except Exception as e:
+            return [[0.0] * self.dimension for _ in texts]
+    
+    def _get_tfidf_embeddings_batch(self, texts: List[str]) -> List[List[float]]:
+        """Get TF-IDF embeddings for batch."""
+        try:
+            from sklearn.feature_extraction.text import TfidfVectorizer
+            
+            self.vectorizer = TfidfVectorizer(
+                max_features=2000,
+                stop_words='english',
+                ngram_range=(1, 3),
+                min_df=1,
+                max_df=0.8,
+                sublinear_tf=True,
+                norm='l2'
+            )
+            
+            tfidf_matrix = self.vectorizer.fit_transform(texts)
+            self._fitted = True
+            
+            dense_matrix = tfidf_matrix.toarray()
+            return [row.tolist() for row in dense_matrix]
+        except Exception as e:
+            return [[0.0] * self.dimension for _ in texts]
+    
+    def get_job_and_candidate_embeddings(self, job_text: str, candidate_texts: List[str]) -> tuple:
+        """Get embeddings for job and candidates together."""
+        if self.active_service in ["cohere", "huggingface", "sentence_transformers"]:
+            # For API services, process separately
+            job_embedding = self.get_embedding(job_text)
+            candidate_embeddings = [self.get_embedding(text) for text in candidate_texts]
+            return job_embedding, candidate_embeddings
+        else:
+            # For TF-IDF, need to fit together
+            all_texts = [job_text] + candidate_texts
+            all_embeddings = self.get_embeddings_batch(all_texts)
+            return all_embeddings[0], all_embeddings[1:]
+    
+    def _preprocess_text_advanced(self, text: str) -> str:
+        """Advanced text preprocessing for better matching."""
+        import re
+        
+        text = text.lower()
+        
+        # Normalize job-related terms
+        replacements = {
+            'artificial intelligence': 'ai machine learning',
+            'machine learning': 'ml ai data science',
+            'deep learning': 'dl neural networks ai',
+            'natural language processing': 'nlp text analysis',
+            'computer vision': 'cv image processing',
+            'data science': 'datascience analytics ml',
+            'software engineering': 'programming development coding',
+            'full stack': 'fullstack frontend backend',
+            'front end': 'frontend ui web development',
+            'back end': 'backend server api development',
+            'devops': 'deployment automation ci cd',
+            'cloud computing': 'cloud aws azure gcp',
+            'amazon web services': 'aws cloud computing',
+            'google cloud platform': 'gcp cloud computing',
+            'microsoft azure': 'azure cloud computing',
+        }
+        
+        for original, enhanced in replacements.items():
+            text = text.replace(original, enhanced)
+        
+        # Remove noise
+        text = re.sub(r'\S+@\S+', '', text)  # emails
+        text = re.sub(r'http\S+', '', text)  # URLs
+        text = re.sub(r'\d{4}-\d{4}', '', text)  # dates
+        
+        return text
+    
+    def get_info(self) -> dict:
+        """Get service information."""
+        service_info = {
+            "cohere": {
+                "method": "Cohere Embed v3.0 API + Advanced Preprocessing",
+                "description": "Professional-grade semantic embeddings using Cohere's enterprise API (1000 free calls/month)"
+            },
+            "huggingface": {
+                "method": "Hugging Face Inference API + Advanced Preprocessing", 
+                "description": "Production-quality semantic embeddings via HF managed endpoints (30k free calls/month)"
+            },
+            "sentence_transformers": {
+                "method": "SentenceTransformers + Advanced Preprocessing",
+                "description": "High-quality semantic similarity using local transformer models"
+            },
+            "tfidf": {
+                "method": "Enhanced TF-IDF + Domain Knowledge",
+                "description": "Advanced keyword and phrase matching with professional preprocessing"
+            }
+        }
+        
+        return service_info.get(self.active_service, service_info["tfidf"])
+
+
+class FreeAIService:
+    """Enhanced free AI service with sophisticated analysis."""
+    
+    def __init__(self):
+        self.job_domains = {
+            'data': ['data', 'analytics', 'scientist', 'analysis', 'statistics', 'research'],
+            'engineering': ['engineer', 'development', 'programming', 'coding', 'software', 'technical'],
+            'product': ['product', 'management', 'strategy', 'roadmap', 'feature', 'user experience'],
+            'marketing': ['marketing', 'growth', 'campaign', 'brand', 'content', 'social media'],
+            'sales': ['sales', 'business development', 'account', 'revenue', 'client', 'customer'],
+            'design': ['design', 'ui', 'ux', 'user interface', 'visual', 'creative'],
+            'operations': ['operations', 'logistics', 'supply chain', 'process', 'efficiency'],
+            'finance': ['finance', 'accounting', 'budget', 'financial', 'investment', 'economics'],
+            'hr': ['human resources', 'recruiting', 'talent', 'people', 'organizational'],
+            'consulting': ['consulting', 'advisory', 'strategy', 'transformation', 'optimization']
+        }
+    
+    def generate_fit_summary(self, job_description: str, resume_text: str, candidate_name: str) -> str:
+        """Generate comprehensive candidate fit analysis."""
+        try:
+            analysis = self._analyze_candidate_fit(job_description, resume_text, candidate_name)
+            return self._format_summary(analysis)
+        except Exception as e:
+            return f"Analysis temporarily unavailable. {candidate_name} appears to be a relevant candidate based on resume content."
+    
+    def _analyze_candidate_fit(self, job_desc: str, resume: str, name: str) -> dict:
+        """Comprehensive analysis of candidate fit."""
+        job_lower = job_desc.lower()
+        resume_lower = resume.lower()
+        
+        # Detect job domain
+        domain = self._detect_domain(job_lower)
+        
+        # Core analysis components
+        core_fit = self._assess_core_fit(job_lower, resume_lower, domain)
+        skills_analysis = self._analyze_skills_match(job_lower, resume_lower)
+        experience_analysis = self._analyze_experience_match(job_lower, resume_lower)
+        recommendations = self._generate_recommendations(job_lower, resume_lower, domain)
+        
+        return {
+            'name': name,
+            'domain': domain,
+            'core_fit': core_fit,
+            'skills': skills_analysis,
+            'experience': experience_analysis,
+            'recommendations': recommendations
+        }
+    
+    def _detect_domain(self, job_text: str) -> str:
+        """Detect primary job domain."""
+        domain_scores = {}
+        for domain, keywords in self.job_domains.items():
+            score = sum(1 for keyword in keywords if keyword in job_text)
+            domain_scores[domain] = score
+        
+        return max(domain_scores, key=domain_scores.get) if domain_scores else 'general'
+    
+    def _assess_core_fit(self, job_text: str, resume_text: str, domain: str) -> dict:
+        """Assess core qualification fit."""
+        domain_keywords = self.job_domains.get(domain, [])
+        
+        # Check domain relevance
+        domain_matches = sum(1 for keyword in domain_keywords if keyword in resume_text)
+        domain_score = min(domain_matches / max(len(domain_keywords) * 0.3, 1), 1.0)
+        
+        # Check for key qualifications
+        key_terms = ['experience', 'skilled', 'proficient', 'expert', 'knowledge', 'background']
+        qualification_score = sum(1 for term in key_terms if term in resume_text) / len(key_terms)
+        
+        return {
+            'domain_relevance': domain_score,
+            'qualification_strength': qualification_score,
+            'overall_fit': (domain_score + qualification_score) / 2
+        }
+    
+    def _analyze_skills_match(self, job_text: str, resume_text: str) -> dict:
+        """Analyze skills alignment."""
+        # Common technical skills
+        tech_skills = ['python', 'javascript', 'java', 'sql', 'react', 'node', 'aws', 'docker', 
+                      'kubernetes', 'git', 'api', 'database', 'cloud', 'machine learning', 'ai']
+        
+        # Soft skills
+        soft_skills = ['leadership', 'communication', 'teamwork', 'problem solving', 'analytical',
+                      'project management', 'collaboration', 'mentoring', 'strategic thinking']
+        
+        job_tech = [skill for skill in tech_skills if skill in job_text]
+        resume_tech = [skill for skill in tech_skills if skill in resume_text]
+        tech_overlap = set(job_tech) & set(resume_tech)
+        
+        job_soft = [skill for skill in soft_skills if skill in job_text]
+        resume_soft = [skill for skill in soft_skills if skill in resume_text]
+        soft_overlap = set(job_soft) & set(resume_soft)
+        
+        return {
+            'technical_match': len(tech_overlap) / max(len(job_tech), 1),
+            'soft_skills_match': len(soft_overlap) / max(len(job_soft), 1),
+            'matched_technical': list(tech_overlap),
+            'matched_soft': list(soft_overlap)
+        }
+    
+    def _analyze_experience_match(self, job_text: str, resume_text: str) -> dict:
+        """Analyze experience level and relevance."""
+        # Experience indicators
+        exp_indicators = ['years', 'experience', 'worked', 'led', 'managed', 'developed', 'implemented']
+        senior_indicators = ['senior', 'lead', 'principal', 'architect', 'director', 'manager']
+        
+        exp_score = sum(1 for indicator in exp_indicators if indicator in resume_text) / len(exp_indicators)
+        seniority_score = sum(1 for indicator in senior_indicators if indicator in resume_text) / len(senior_indicators)
+        
+        return {
+            'experience_depth': exp_score,
+            'seniority_level': seniority_score,
+            'leadership_potential': seniority_score > 0.3
+        }
+    
+    def _generate_recommendations(self, job_text: str, resume_text: str, domain: str) -> list:
+        """Generate specific recommendations."""
+        recommendations = []
+        
+        if 'startup' in job_text or 'fast-paced' in job_text:
+            if 'adaptable' in resume_text or 'agile' in resume_text:
+                recommendations.append("Well-suited for fast-paced startup environment")
+        
+        if 'remote' in job_text or 'distributed' in job_text:
+            if 'remote' in resume_text or 'distributed' in resume_text:
+                recommendations.append("Experienced with remote work dynamics")
+        
+        if 'team' in job_text and ('collaboration' in resume_text or 'teamwork' in resume_text):
+            recommendations.append("Strong collaborative skills for team-based role")
+        
+        if domain == 'data' and any(term in resume_text for term in ['analysis', 'statistics', 'modeling']):
+            recommendations.append("Strong analytical background for data-focused role")
+        
+        return recommendations or ["Relevant background for the position"]
+    
+    def _format_summary(self, analysis: dict) -> str:
+        """Format analysis into readable summary."""
+        name = analysis['name']
+        domain = analysis['domain'].title()
+        core_fit = analysis['core_fit']
+        skills = analysis['skills']
+        experience = analysis['experience']
+        recommendations = analysis['recommendations']
+        
+        # Build summary
+        summary_parts = []
+        
+        # Opening
+        fit_level = "excellent" if core_fit['overall_fit'] > 0.7 else "strong" if core_fit['overall_fit'] > 0.5 else "good"
+        summary_parts.append(f"{name} presents a {fit_level} fit for this {domain} position.")
+        
+        # Skills highlight
+        if skills['matched_technical']:
+            tech_skills = ', '.join(skills['matched_technical'][:3])
+            summary_parts.append(f"Technical strengths include {tech_skills}.")
+        
+        # Experience note
+        if experience['leadership_potential']:
+            summary_parts.append("Demonstrates leadership experience and senior-level capabilities.")
+        elif experience['experience_depth'] > 0.6:
+            summary_parts.append("Shows solid professional experience and technical depth.")
+        
+        # Recommendations
+        if recommendations:
+            summary_parts.append(recommendations[0])
+        
+        # Closing
+        summary_parts.append(f"Recommended for further consideration based on relevant background and skill alignment.")
+        
+        return " ".join(summary_parts)
+
 
 def process_uploaded_file(uploaded_file) -> str:
     """Process uploaded file and extract text."""

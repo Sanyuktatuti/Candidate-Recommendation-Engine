@@ -23,3 +23,11 @@ plotly>=5.15.0
 
 # HTTP Client
 httpx>=0.25.0
+
+# Professional APIs for enhanced free service
+cohere>=4.21
+requests>=2.28.0
+
+# Free alternatives (optional - better quality than basic)
+sentence-transformers>=2.2.0
+torch>=1.13.0

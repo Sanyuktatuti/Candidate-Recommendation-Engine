@@ -12,7 +12,6 @@ An AI-powered web application that matches the best candidates to job descriptio
 Parse → Embed → L2-normalize → Cosine similarity → Rank top-K → (Optional) AI summary
 
 ### Screenshots
-_(optional but recommended for reviewers; replace with real images)_
 - ![Home](docs/screenshots/home.png)
 - ![Results](docs/screenshots/Result1.png)
 - ![Results](docs/screenshots/Result1.png)

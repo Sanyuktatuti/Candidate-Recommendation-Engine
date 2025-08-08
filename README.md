@@ -286,7 +286,7 @@ RETRY_ATTEMPTS=3                # Error retry count
 - **Output Consistency**: Standardized response formats across all AI tiers
 - **Backward Compatibility**: Legacy method support for existing integrations
 
-#### **📊 Benefits for HR/Recruiting**
+#### ** Benefits for HR/Recruiting**
 
 **Enterprise Ready:**
 
@@ -354,7 +354,7 @@ STREAMLIT_PORT=8501
 
 Our app automatically selects the best available AI service in this priority order:
 
-### ** Tier 1: Premium (OpenAI)**
+### **Tier 1: Premium (OpenAI)**
 
 - **Technology**: OpenAI text-embedding-ada-002 + GPT-3.5/4
 - **Quality**: Industry-leading semantic understanding
@@ -362,7 +362,7 @@ Our app automatically selects the best available AI service in this priority ord
 - **Features**: Premium embeddings + human-like summaries
 - **Availability**: Automatic (no setup required)
 
-### ** Tier 2: Professional (Cohere)**
+### **Tier 2: Professional (Cohere)**
 
 - **Technology**: Cohere Embed v3.0 + Command R
 - **Quality**: Excellent semantic understanding with multilingual support
@@ -370,7 +370,7 @@ Our app automatically selects the best available AI service in this priority ord
 - **Features**: High-quality embeddings + enhanced analysis
 - **Availability**: Automatic fallback
 
-### ** Tier 3: Enhanced (Hugging Face)**
+### **Tier 3: Enhanced (Hugging Face)**
 
 - **Technology**: BGE/E5/GTE models via Inference API
 - **Quality**: Good semantic understanding with fast processing
@@ -378,7 +378,7 @@ Our app automatically selects the best available AI service in this priority ord
 - **Features**: Quality embeddings + sophisticated analysis
 - **Availability**: Automatic fallback
 
-### ** Tier 4: Basic (TF-IDF + Local Models)**
+### **Tier 4: Basic (TF-IDF + Local Models)**
 
 - **Technology**: Enhanced TF-IDF + SentenceTransformers (when available)
 - **Quality**: Reliable keyword and phrase matching
@@ -429,7 +429,7 @@ streamlit run streamlit_app.py
 ./run_local.sh 8502
 ```
 
-## 📍 Access Points
+## Access Points
 
 - **Local App**: http://localhost:8501 (or custom port specified)
 - **Live Demo**: https://candidate-recommendation-engine-ks3gdxgzcjfto3624t55v2.streamlit.app/

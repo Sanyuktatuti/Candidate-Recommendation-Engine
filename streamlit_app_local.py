@@ -3,6 +3,14 @@ Standalone Streamlit app for Streamlit Community Cloud deployment.
 This version includes all backend functionality in a single file.
 """
 import os
+
+# Load environment variables from .env file
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    # dotenv not available, continue without it
+    pass
 import io
 import time
 import asyncio
@@ -262,13 +270,14 @@ class UnifiedEmbeddingService:
     def __init__(self):
         # API Keys from environment variables (.env file) or Streamlit Secrets
         import os
+        
+        # Try .env file first (local development)
+        self.OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
+        self.COHERE_API_KEY = os.getenv("COHERE_API_KEY", "")
+        self.HF_API_TOKEN = os.getenv("HF_API_TOKEN", "")
+        
+        # Fallback to Streamlit secrets (only if .env didn't provide the keys)
         try:
-            # Try .env file first (local development)
-            self.OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
-            self.COHERE_API_KEY = os.getenv("COHERE_API_KEY", "")
-            self.HF_API_TOKEN = os.getenv("HF_API_TOKEN", "")
-            
-            # Fallback to Streamlit secrets
             if not self.OPENAI_API_KEY:
                 self.OPENAI_API_KEY = st.secrets.get("OPENAI_API_KEY", "")
             if not self.COHERE_API_KEY:
@@ -276,10 +285,8 @@ class UnifiedEmbeddingService:
             if not self.HF_API_TOKEN:
                 self.HF_API_TOKEN = st.secrets.get("HF_API_TOKEN", "")
         except Exception:
-            # Final fallback
-            self.OPENAI_API_KEY = ""
-            self.COHERE_API_KEY = ""
-            self.HF_API_TOKEN = ""
+            # Secrets not available (normal for local development)
+            pass
         
         # Service initialization
         self.vectorizer = None
@@ -638,15 +645,17 @@ class UnifiedAIService:
     def __init__(self):
         # Try to get OpenAI API key for premium summaries
         import os
+        
+        # Try .env file first (local development)
+        self.openai_api_key = os.getenv("OPENAI_API_KEY", "")
+        
+        # Fallback to Streamlit secrets (only if .env didn't provide the key)
         try:
-            # Try .env file first (local development)
-            self.openai_api_key = os.getenv("OPENAI_API_KEY", "")
-            
-            # Fallback to Streamlit secrets
             if not self.openai_api_key:
                 self.openai_api_key = st.secrets.get("OPENAI_API_KEY", "")
         except:
-            self.openai_api_key = ""
+            # Secrets not available (normal for local development)
+            pass
         
         self.openai_client = None
         if self.openai_api_key:

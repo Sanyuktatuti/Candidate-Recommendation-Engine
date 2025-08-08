@@ -40,6 +40,37 @@ An AI-powered web application that matches the best candidates to job descriptio
 
 > **NEW**: **Automatic Smart Selection** - Our app automatically uses the best available AI service, providing premium quality with intelligent fallback to ensure continuous operation.
 
+## 🏠 **Run Locally**
+
+Want to run the app on your own machine? It's easy!
+
+### **Quick Start (One Command):**
+```bash
+./run_local.sh
+```
+
+### **Manual Setup:**
+```bash
+# 1. Activate virtual environment
+source .venv/bin/activate
+
+# 2. Install dependencies  
+pip install -r requirements.txt
+
+# 3. Run the app
+streamlit run streamlit_app.py
+```
+
+### **🔑 Local Benefits:**
+- ✅ **Uses Your API Keys**: Automatically reads from `.env` file
+- ✅ **Same Premium Experience**: Identical to cloud version
+- ✅ **Fast Development**: Test changes instantly
+- ✅ **Offline Capable**: Works without internet (TF-IDF mode)
+
+**📱 App opens at:** `http://localhost:8501`
+
+---
+
 ## Features
 
 - **Automatic AI Service Selection**: Intelligent hierarchy - Premium → Professional → Enhanced → Basic

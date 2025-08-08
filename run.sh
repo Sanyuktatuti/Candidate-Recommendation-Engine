@@ -125,7 +125,7 @@ start_api() {
 start_streamlit() {
     print_info "Starting Streamlit server on port $STREAMLIT_PORT..."
     
-    nohup streamlit run streamlit_app.py --server.address 0.0.0.0 --server.port $STREAMLIT_PORT > streamlit.log 2>&1 &
+    nohup streamlit run streamlit_app_local.py --server.address 0.0.0.0 --server.port $STREAMLIT_PORT > streamlit.log 2>&1 &
     local streamlit_pid=$!
     echo $streamlit_pid > streamlit.pid
     

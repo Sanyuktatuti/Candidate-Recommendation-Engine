@@ -163,6 +163,8 @@ DEBUG=True
 ./run.sh
 ```
 
+**Note**: The local development uses `streamlit_app_local.py` (requires FastAPI backend), while the cloud deployment uses `streamlit_app.py` (standalone version).
+
 **🛑 Stop All Services**
 
 ```bash
@@ -184,14 +186,17 @@ python scripts/dev.py
 **Option C: Manual Setup**
 
 ```bash
-# Install dependencies
+# For local development (with FastAPI backend)
+pip install -r requirements_local.txt
+
+# For cloud deployment (Streamlit only)
 pip install -r requirements.txt
 
 # Terminal 1: Start API server
 uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 
-# Terminal 2: Start Streamlit
-streamlit run streamlit_app.py --server.address 0.0.0.0 --server.port 8501
+# Terminal 2: Start Streamlit (local development)
+streamlit run streamlit_app_local.py --server.address 0.0.0.0 --server.port 8501
 ```
 
 ### 4. Docker Deployment

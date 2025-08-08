@@ -53,49 +53,29 @@ st.markdown("""
         text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     }
     
-    /* Section headers */
-    .section-header {
-        font-size: 1.4rem;
-        font-weight: 600;
-        color: #34495E;
-        margin-top: 2rem;
-        margin-bottom: 1rem;
-        padding-left: 0.5rem;
-        border-left: 4px solid #3498DB;
-    }
-    
-    /* Progress button */
-    .progress-button {
-        background: linear-gradient(135deg, #3498DB 0%, #2980B9 100%);
-        color: white;
-        padding: 0.8rem 2rem;
-        border: none;
+    /* Step indicator */
+    .step-indicator {
+        background: #E8F4FD;
+        border: 1px solid #D6EAF8;
         border-radius: 8px;
-        font-size: 1.1rem;
+        padding: 1rem;
+        margin: 1rem 0;
+        color: #2980B9;
+        font-weight: 500;
+        text-align: center;
+    }
+    
+    /* Clean section headers */
+    .clean-header {
+        font-size: 1.8rem;
         font-weight: 600;
-        cursor: pointer;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        transition: all 0.3s ease;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        margin: 1.5rem auto;
-    }
-    
-    .progress-button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-        background: linear-gradient(135deg, #2980B9 0%, #1A6B9D 100%);
-    }
-    
-    /* Cards and containers */
-    .card {
-        background: white;
-        border-radius: 12px;
-        padding: 1.5rem;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-        border: 1px solid #E8EBF0;
-        margin-bottom: 1.5rem;
+        color: #2C3E50;
+        margin: 2.5rem 0 1.5rem 0;
+        padding: 1.2rem 1.5rem;
+        background: linear-gradient(135deg, #F8F9FA 0%, #E9ECEF 100%);
+        border-left: 5px solid #3498DB;
+        border-radius: 0 12px 12px 0;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
     }
     
     /* Similarity score styling */
@@ -119,83 +99,12 @@ st.markdown("""
         padding-bottom: 0.5rem;
     }
     
-    /* Metric cards */
-    .metric-card {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        padding: 1.5rem;
-        border-radius: 12px;
-        color: white;
-        text-align: center;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    }
-    
-    /* Upload area styling */
-    .upload-area {
-        border: 2px dashed #BDC3C7;
-        border-radius: 8px;
-        padding: 2rem;
-        text-align: center;
-        background: #FAFBFC;
-        transition: all 0.3s ease;
-    }
-    
-    .upload-area:hover {
-        border-color: #3498DB;
-        background: #EBF3FD;
-    }
-    
-    /* Step indicator */
-    .step-indicator {
-        background: #E8F4FD;
-        border: 1px solid #D6EAF8;
-        border-radius: 8px;
-        padding: 1rem;
-        margin: 1rem 0;
-        color: #2980B9;
-        font-weight: 500;
-        text-align: center;
-    }
-    
     /* Main container */
     .main .block-container {
         max-width: 1200px;
         padding-top: 2rem;
         padding-left: 2rem;
         padding-right: 2rem;
-    }
-    
-    /* Input fields */
-    .stTextInput > div > div > input {
-        border-radius: 8px;
-        border: 2px solid #E8EBF0;
-        padding: 0.75rem;
-        font-size: 1rem;
-    }
-    
-    .stTextArea > div > div > textarea {
-        border-radius: 8px;
-        border: 2px solid #E8EBF0;
-        padding: 0.75rem;
-        font-size: 1rem;
-    }
-    
-    .stTextInput > div > div > input:focus,
-    .stTextArea > div > div > textarea:focus {
-        border-color: #3498DB;
-        box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
-    }
-    
-    /* Clean section headers */
-    .clean-header {
-        font-size: 1.8rem;
-        font-weight: 600;
-        color: #2C3E50;
-        margin: 2.5rem 0 1.5rem 0;
-        padding: 1.2rem 1.5rem;
-        background: linear-gradient(135deg, #F8F9FA 0%, #E9ECEF 100%);
-        border-left: 5px solid #3498DB;
-        border-radius: 0 12px 12px 0;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
     }
 </style>
 """, unsafe_allow_html=True)
@@ -336,134 +245,6 @@ SUMMARY:"""
             return response.choices[0].message.content.strip()
         except Exception as e:
             return f"Unable to generate summary: {str(e)}"
-
-
-class FreeEmbeddingService:
-    """Free embedding service using TF-IDF and keyword matching."""
-    
-    def __init__(self):
-        self.vectorizer = None
-        self.method = "tfidf"
-        self.dimension = 2000  # Match max_features
-    
-    def get_embedding(self, text: str) -> List[float]:
-        """Get embedding for single text."""
-        if not hasattr(self, '_fitted') or not self._fitted:
-            return [0.0] * self.dimension
-        
-        try:
-            tfidf_matrix = self.vectorizer.transform([text])
-            return tfidf_matrix.toarray()[0].tolist()
-        except:
-            return [0.0] * self.dimension
-    
-    def get_embeddings_batch(self, texts: List[str]) -> List[List[float]]:
-        """Get embeddings for multiple texts using TF-IDF."""
-        try:
-            from sklearn.feature_extraction.text import TfidfVectorizer
-            
-            # Enhanced TF-IDF with better parameters for resumes
-            self.vectorizer = TfidfVectorizer(
-                max_features=2000,  # More features for better granularity
-                stop_words='english',
-                ngram_range=(1, 3),  # Include trigrams for better context
-                min_df=1,
-                max_df=0.85,  # More restrictive to filter common words
-                sublinear_tf=True,  # Use log scaling
-                norm='l2'  # L2 normalization for better cosine similarity
-            )
-            
-            # Fit and transform
-            tfidf_matrix = self.vectorizer.fit_transform(texts)
-            self._fitted = True
-            
-            # Convert to list of lists
-            dense_matrix = tfidf_matrix.toarray()
-            return [row.tolist() for row in dense_matrix]
-            
-        except Exception as e:
-            st.error(f"Error generating embeddings: {e}")
-            return [[0.0] * self.dimension for _ in texts]
-    
-    def get_job_and_candidate_embeddings(self, job_text: str, candidate_texts: List[str]) -> tuple[List[float], List[List[float]]]:
-        """
-        Get embeddings for job and candidates together (required for TF-IDF).
-        This ensures they're in the same vector space.
-        """
-        try:
-            # Combine job + candidates for fitting
-            all_texts = [job_text] + candidate_texts
-            all_embeddings = self.get_embeddings_batch(all_texts)
-            
-            # Split back into job and candidates
-            job_embedding = all_embeddings[0]
-            candidate_embeddings = all_embeddings[1:]
-            
-            return job_embedding, candidate_embeddings
-            
-        except Exception as e:
-            st.error(f"Error generating embeddings: {e}")
-            # Fallback to simple method
-            job_embedding = [0.1] * self.dimension  # Small positive values
-            candidate_embeddings = [[0.1] * self.dimension for _ in candidate_texts]
-            return job_embedding, candidate_embeddings
-
-    def get_info(self) -> dict:
-        return {
-            "method": "TF-IDF + N-grams",
-            "description": "Fast keyword-based similarity using TF-IDF vectorization"
-        }
-
-
-class FreeAIService:
-    """Free AI service using template-based summaries."""
-    
-    def generate_fit_summary(self, job_description: str, resume_text: str, candidate_name: str) -> str:
-        """Generate template-based summary."""
-        try:
-            # Extract skills
-            job_skills = self._extract_skills(job_description.lower())
-            candidate_skills = self._extract_skills(resume_text.lower())
-            
-            # Find matches
-            matching_skills = set(job_skills) & set(candidate_skills)
-            match_percentage = len(matching_skills) / max(len(job_skills), 1) * 100
-            
-            # Generate summary
-            if match_percentage >= 60:
-                quality = "excellent"
-            elif match_percentage >= 40:
-                quality = "good"
-            elif match_percentage >= 20:
-                quality = "moderate"
-            else:
-                quality = "basic"
-            
-            templates = {
-                "excellent": f"{candidate_name} shows excellent alignment with this position, with strong skills in {', '.join(list(matching_skills)[:3])}. Their background demonstrates {match_percentage:.0f}% skill overlap with the requirements.",
-                "good": f"{candidate_name} presents a solid match for this role, with relevant experience in {', '.join(list(matching_skills)[:2])}. Shows {match_percentage:.0f}% alignment with the position requirements.",
-                "moderate": f"{candidate_name} has foundational qualifications with some overlap in {', '.join(list(matching_skills)[:2]) if matching_skills else 'technical areas'}. May require additional training but shows potential.",
-                "basic": f"{candidate_name} demonstrates basic qualifications for this role. Further assessment recommended to determine specific training needs and development opportunities."
-            }
-            
-            return templates[quality]
-            
-        except Exception as e:
-            return f"{candidate_name} appears to have relevant experience. Manual review recommended."
-    
-    def _extract_skills(self, text: str) -> List[str]:
-        """Extract technical skills."""
-        skills = [
-            'python', 'java', 'javascript', 'react', 'node', 'sql', 'aws', 'docker',
-            'machine learning', 'data science', 'ai', 'analytics', 'api', 'database',
-            'cloud', 'agile', 'scrum', 'git', 'linux', 'frontend', 'backend'
-        ]
-        
-        found = []
-        for skill in skills:
-            if skill in text:
-                found.append(skill)
-        return found
 
 def process_uploaded_file(uploaded_file) -> str:
     """Process uploaded file and extract text."""
@@ -699,7 +480,7 @@ def main():
         st.sidebar.info("""
         **Free Mode Features:**
         - No API key required
-        - Uses TF-IDF + keyword matching
+        - Uses FastAPI backend with TF-IDF
         - Works completely offline
         - Good quality for basic screening
         
@@ -707,12 +488,6 @@ def main():
         switch to OpenAI mode above for significantly 
         better semantic understanding and summaries.
         """)
-        
-        # Show which free method is being used
-        free_embedding_service = FreeEmbeddingService()
-        method_info = free_embedding_service.get_info()
-        st.sidebar.write(f"**Method:** {method_info['method']}")
-        st.sidebar.write(f"**Quality:** {method_info['description']}")
     
     # Initialize services based on mode
     try:
@@ -722,8 +497,9 @@ def main():
             st.sidebar.success("OpenAI connection ready!")
         else:
             # Use free services
-            embedding_service = FreeEmbeddingService()
-            ai_service = FreeAIService()
+            from app.services.free_embedding_service import free_embedding_service, free_ai_service
+            embedding_service = free_embedding_service
+            ai_service = free_ai_service
             st.sidebar.success("Free AI services ready!")
     except Exception as e:
         if use_openai:
@@ -971,13 +747,13 @@ def main():
                 display_results(job_desc, candidates, similarities, summaries)
                 
                 # Show processing time
-                st.success(f"Processing completed in {processing_time:.2f} seconds")
+                st.success(f"⚡ Processing completed in {processing_time:.2f} seconds")
     
     else:
         if method == "File Upload":
-            st.info("Please upload resume files using the file uploader above")
+            st.info("👆 Please upload resume files using the file uploader above")
         else:
-            st.info("Please add at least one candidate with both name and resume content")
+            st.info("👆 Please add at least one candidate with both name and resume content")
 
 if __name__ == "__main__":
     main()

@@ -74,10 +74,10 @@ Parse → Embed → L2-normalize → Cosine similarity → Rank top-K → (Optio
 
 **AI Service Tiers (Automatic based on the availability of the models):**
 
-- **🚀 Premium**: OpenAI API (Best quality)
-- **✨ Professional**: Cohere API (Excellent quality)
-- **⚡ Enhanced**: Hugging Face API (Good quality)
-- **📊 Basic**: TF-IDF Analysis (Always available)
+- **Premium**: OpenAI API (Best quality)
+- **Professional**: Cohere API (Excellent quality)
+- **Enhanced**: Hugging Face API (Good quality)
+- **Basic**: TF-IDF Analysis (Always available)
 
 ---
 
@@ -106,12 +106,12 @@ pip install -r requirements.txt
 streamlit run streamlit_app.py
 ```
 
-### **🔑 Local Benefits:**
+### ** Local Benefits:**
 
-- ✅ **Uses Your API Keys**: Automatically reads from `.env` file
-- ✅ **Same Premium Experience**: Identical to cloud version
-- ✅ **Fast Development**: Test changes instantly
-- ✅ **Offline Capable**: Works without internet (TF-IDF mode)
+- **Uses Your API Keys**: Automatically reads from `.env` file
+- **Same Premium Experience**: Identical to cloud version
+- **Fast Development**: Test changes instantly
+- **Offline Capable**: Works without internet (TF-IDF mode)
 
 **📱 App opens at:** `http://localhost:8501`
 
@@ -237,7 +237,7 @@ STREAMLIT_PORT=8501
 
 Our app automatically selects the best available AI service in this priority order:
 
-### **🚀 Tier 1: Premium (OpenAI)**
+### ** Tier 1: Premium (OpenAI)**
 
 - **Technology**: OpenAI text-embedding-ada-002 + GPT-3.5/4
 - **Quality**: Industry-leading semantic understanding
@@ -245,7 +245,7 @@ Our app automatically selects the best available AI service in this priority ord
 - **Features**: Premium embeddings + human-like summaries
 - **Availability**: Automatic (no setup required)
 
-### **✨ Tier 2: Professional (Cohere)**
+### ** Tier 2: Professional (Cohere)**
 
 - **Technology**: Cohere Embed v3.0 + Command R
 - **Quality**: Excellent semantic understanding with multilingual support
@@ -253,7 +253,7 @@ Our app automatically selects the best available AI service in this priority ord
 - **Features**: High-quality embeddings + enhanced analysis
 - **Availability**: Automatic fallback
 
-### **⚡ Tier 3: Enhanced (Hugging Face)**
+### ** Tier 3: Enhanced (Hugging Face)**
 
 - **Technology**: BGE/E5/GTE models via Inference API
 - **Quality**: Good semantic understanding with fast processing
@@ -261,7 +261,7 @@ Our app automatically selects the best available AI service in this priority ord
 - **Features**: Quality embeddings + sophisticated analysis
 - **Availability**: Automatic fallback
 
-### **📊 Tier 4: Basic (TF-IDF + Local Models)**
+### ** Tier 4: Basic (TF-IDF + Local Models)**
 
 - **Technology**: Enhanced TF-IDF + SentenceTransformers (when available)
 - **Quality**: Reliable keyword and phrase matching
@@ -271,11 +271,11 @@ Our app automatically selects the best available AI service in this priority ord
 
 ## Smart Selection Benefits
 
-✅ **Zero Configuration**: Works immediately with premium quality  
-✅ **Intelligent Fallback**: Seamlessly switches if one service is unavailable  
-✅ **Cost Effective**: Uses our API allocations efficiently  
-✅ **Consistent Experience**: Users always get the best available quality  
-✅ **Production Ready**: Built-in redundancy for enterprise use
+**Zero Configuration**: Works immediately with premium quality  
+**Intelligent Fallback**: Seamlessly switches if one service is unavailable  
+**Cost Effective**: Uses our API allocations efficiently  
+**Consistent Experience**: Users always get the best available quality  
+**Production Ready**: Built-in redundancy for enterprise use
 
 ### 3. Run the Application
 
@@ -286,7 +286,7 @@ Our app automatically selects the best available AI service in this priority ord
 ./run_local.sh
 ```
 
-**🛑 Stop All Services**
+** Stop All Services**
 
 ```bash
 ./stop_local.sh
@@ -469,8 +469,8 @@ candidate-recommendation-engine/
 │       ├── components.py          # Reusable Streamlit components
 │       └── display.py             # Result display and charts
 ├── streamlit_app.py               # Main application entry point
-├── run_local.sh                   # 🚀 Enhanced local launcher
-├── stop_local.sh                  # 🛑 Complete cleanup script
+├── run_local.sh                   # Enhanced local launcher
+├── stop_local.sh                  # Complete cleanup script
 ├── requirements.txt               # Cloud deployment dependencies
 ├── .env.example                   # Environment variables template
 ├── .env                          # Your API keys (not in git)
@@ -517,7 +517,7 @@ pytest tests/
 pytest --cov=app tests/
 ```
 
-## 🚢 Production Deployment
+## Production Deployment
 
 ### Streamlit Cloud (Current)
 
@@ -592,7 +592,7 @@ pip install -r requirements.txt
 
 ## Performance Metrics
 
-### **🚀 Premium Tier (OpenAI) Performance**
+### ** Premium Tier (OpenAI) Performance**
 
 - **Total Processing Time**: 8.82 seconds for 3 candidates (2.94s per candidate)
 - **Embedding Generation**: ~100ms per candidate
@@ -601,7 +601,7 @@ pip install -r requirements.txt
 - **Quality**: Industry-leading semantic understanding
 - **Best For**: Professional recruiting, high-stakes hiring
 
-### **✨ Professional Tier (Cohere) Performance**
+### ** Professional Tier (Cohere) Performance**
 
 - **Total Processing Time**: ~6 seconds for 3 candidates (2.0s per candidate)
 - **Embedding Generation**: ~80ms per candidate
@@ -619,7 +619,7 @@ pip install -r requirements.txt
 - **Quality**: Good semantic understanding with fast processing
 - **Best For**: Medium-scale recruiting, quick screening
 
-### **📊 Basic Tier (TF-IDF) Performance**
+### ** Basic Tier (TF-IDF) Performance**
 
 - **Total Processing Time**: ~1.5 seconds for 3 candidates (0.5s per candidate)
 - **Embedding Generation**: ~50ms per candidate (enhanced TF-IDF)
@@ -635,19 +635,7 @@ pip install -r requirements.txt
 - **Similarity Scores**: Range from 0-100% with tier-appropriate explanations
 - **Automatic Fallback**: <1s switching time between tiers
 
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit changes (`git commit -m 'Add amazing feature'`)
-4. Push to branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - **OpenAI** for industry-leading embedding and language models
 - **Cohere** for excellent multilingual semantic understanding
@@ -658,7 +646,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-## 📞 Support
+## Support
 
 - **Issues**: [GitHub Issues](https://github.com/yourusername/Candidate-Recommendation-Engine/issues)
 - **Documentation**: [API Docs](http://localhost:8000/docs)

@@ -825,11 +825,4 @@ pip install -r requirements.txt
 - **FastAPI** for modern Python web framework
 
 ---
-
-## Support
-
-- **Issues**: [GitHub Issues](https://github.com/yourusername/Candidate-Recommendation-Engine/issues)
-- **Documentation**: [API Docs](http://localhost:8000/docs)
-- **Email**: your.email@example.com
-
 Built for better hiring decisions.

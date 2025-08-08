@@ -12,8 +12,13 @@ An AI-powered web application that matches the best candidates to job descriptio
 Parse → Embed → L2-normalize → Cosine similarity → Rank top-K → (Optional) AI summary
 
 ### Screenshots
-- ![Home](docs/screenshots/home.png)
-*Figure 1: Home — Job Description input and resume uploader.*
+
+<p align="center">
+  <img src="docs/screenshots/home.png" alt="Home" width="900">
+  <br>
+  <em>Figure 1: Home — Job Description input and resume uploader.</em>
+</p>
+
 
 - ![Results](docs/screenshots/Result1.png)
 - ![Results](docs/screenshots/Result1.png)

@@ -25,7 +25,6 @@ except ImportError:
 
 # AI and ML
 import openai
-import faiss
 from sklearn.metrics.pairwise import cosine_similarity
 
 # Set page config

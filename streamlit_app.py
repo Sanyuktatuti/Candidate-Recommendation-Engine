@@ -350,9 +350,16 @@ class FreeEmbeddingService:
     """Professional-grade free embedding service with API hierarchy."""
     
     def __init__(self):
-        # API Keys - EDIT THESE WITH YOUR ACTUAL KEYS
-        self.COHERE_API_KEY = "YOUR_COHERE_API_KEY_HERE"  # Get free key from cohere.ai
-        self.HF_API_TOKEN = "YOUR_HUGGINGFACE_TOKEN_HERE"  # Get free token from huggingface.co
+        # API Keys from Streamlit Secrets (secure server-side storage)
+        try:
+            self.COHERE_API_KEY = st.secrets.get("COHERE_API_KEY", "")
+            self.HF_API_TOKEN = st.secrets.get("HF_API_TOKEN", "")
+            self.OPENAI_API_KEY = st.secrets.get("OPENAI_API_KEY", "")  # For reference
+        except Exception:
+            # Fallback if secrets not configured
+            self.COHERE_API_KEY = ""
+            self.HF_API_TOKEN = ""
+            self.OPENAI_API_KEY = ""
         
         # Service initialization
         self.vectorizer = None
@@ -410,7 +417,7 @@ class FreeEmbeddingService:
     def _init_cohere(self) -> bool:
         """Initialize Cohere API."""
         try:
-            if self.COHERE_API_KEY == "YOUR_COHERE_API_KEY_HERE":
+            if not self.COHERE_API_KEY or self.COHERE_API_KEY == "":
                 return False
             
             if cohere is None:
@@ -431,7 +438,7 @@ class FreeEmbeddingService:
     def _init_huggingface(self) -> bool:
         """Initialize Hugging Face Inference API."""
         try:
-            if self.HF_API_TOKEN == "YOUR_HUGGINGFACE_TOKEN_HERE":
+            if not self.HF_API_TOKEN or self.HF_API_TOKEN == "":
                 return False
             
             self.hf_headers = {"Authorization": f"Bearer {self.HF_API_TOKEN}"}
@@ -1118,11 +1125,20 @@ def main():
     api_key = None
     
     if use_openai:
-        api_key = st.sidebar.text_input(
-            "OpenAI API Key",
-            type="password",
-            help="Enter your OpenAI API key. Get one at https://platform.openai.com/api-keys"
-        )
+        # Try to get API key from secrets first, then fallback to user input
+        try:
+            api_key = st.secrets.get("OPENAI_API_KEY", "")
+        except:
+            api_key = ""
+            
+        if not api_key:
+            api_key = st.sidebar.text_input(
+                "OpenAI API Key",
+                type="password",
+                help="Enter your OpenAI API key. Get one at https://platform.openai.com/api-keys"
+            )
+        else:
+            st.sidebar.success("✅ OpenAI API Key loaded from secrets")
         
         if not api_key:
             st.warning("⚠️ Please enter your OpenAI API key in the sidebar to use the recommended OpenAI service.")

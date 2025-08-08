@@ -772,7 +772,7 @@ pip install -r requirements.txt
 
 ## Performance Metrics
 
-### ** Premium Tier (OpenAI) Performance**
+### **Premium Tier (OpenAI) Performance**
 
 - **Total Processing Time**: 8.82 seconds for 3 candidates (2.94s per candidate)
 - **Embedding Generation**: ~100ms per candidate
@@ -781,7 +781,7 @@ pip install -r requirements.txt
 - **Quality**: Industry-leading semantic understanding
 - **Best For**: Professional recruiting, high-stakes hiring
 
-### ** Professional Tier (Cohere) Performance**
+### **Professional Tier (Cohere) Performance**
 
 - **Total Processing Time**: ~6 seconds for 3 candidates (2.0s per candidate)
 - **Embedding Generation**: ~80ms per candidate
@@ -790,7 +790,7 @@ pip install -r requirements.txt
 - **Quality**: Excellent semantic understanding with multilingual support
 - **Best For**: International recruiting, diverse candidate pools
 
-### **⚡ Enhanced Tier (Hugging Face) Performance**
+### **Enhanced Tier (Hugging Face) Performance**
 
 - **Total Processing Time**: ~4 seconds for 3 candidates (1.3s per candidate)
 - **Embedding Generation**: ~60ms per candidate
@@ -799,7 +799,7 @@ pip install -r requirements.txt
 - **Quality**: Good semantic understanding with fast processing
 - **Best For**: Medium-scale recruiting, quick screening
 
-### ** Basic Tier (TF-IDF) Performance**
+### **Basic Tier (TF-IDF) Performance**
 
 - **Total Processing Time**: ~1.5 seconds for 3 candidates (0.5s per candidate)
 - **Embedding Generation**: ~50ms per candidate (enhanced TF-IDF)

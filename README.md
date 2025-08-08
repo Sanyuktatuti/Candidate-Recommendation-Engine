@@ -9,6 +9,7 @@ An AI-powered web application that matches the best candidates to job descriptio
 **Login / Credentials:** Not required — the public demo is open.
 
 ### Approach (at a glance)
+
 Parse → Embed → L2-normalize → Cosine similarity → Rank top-K → (Optional) AI summary
 
 ### Screenshots
@@ -62,6 +63,7 @@ Parse → Embed → L2-normalize → Cosine similarity → Rank top-K → (Optio
 
    - Job title and detailed job description
    - Requirements and preferred skills
+
 3. **Upload Resumes:**
 
    - Upload multiple PDF, DOCX, or TXT files
@@ -128,6 +130,8 @@ streamlit run streamlit_app.py
 - **Interactive UI**: Modern Streamlit interface with charts, metrics, and detailed candidate analysis
 - **Production Ready**: Clean modular architecture with comprehensive error handling
 - **Scalable Design**: Object-oriented components with separation of concerns
+- **Enterprise Security**: Comprehensive prompt hygiene with PII protection and configurable AI parameters
+- **Professional Templates**: Industry-standard HR analysis prompts with intelligent fallback systems
 
 ## Architecture
 
@@ -161,6 +165,7 @@ streamlit run streamlit_app.py
 │ GPT-3.5/4     │                 │                │                 │
 └───────────────┴─────────────────┴─────────────────┴─────────────────┘
 ```
+
 ## Assumptions & Limitations
 
 - **Supported inputs:** PDF, DOCX, TXT resumes; JD via text input
@@ -184,6 +189,118 @@ streamlit run streamlit_app.py
 - **Document Processing**: PyPDF2, python-docx with robust text extraction
 - **Deployment**: Streamlit Cloud with automatic GitHub integration
 - **Configuration**: Environment-based secrets management (`st.secrets` + `.env`)
+- **AI Security**: Comprehensive prompt hygiene with PII protection and template management
+
+## Prompt Hygiene & AI Security
+
+### Enterprise-Grade AI Safety System
+
+This application implements **comprehensive prompt hygiene** following industry best practices for secure AI integration, particularly important for HR/recruiting applications handling sensitive candidate data.
+
+#### **PII Protection System**
+
+**Comprehensive Detection & Removal:**
+
+- **Contact Information**: Email addresses, phone numbers
+- **Identity Documents**: SSN, driver's license numbers, passport numbers
+- **Location Data**: Street addresses, zip codes
+- **Financial Information**: Credit card numbers, bank details
+- **Personal Details**: Date of birth, emergency contacts
+- **Sensitive Context**: Keywords indicating personal information
+
+**Smart Processing:**
+
+- **Risk Assessment**: Categorizes detections as High/Medium/Low risk
+- **Context Preservation**: Maintains professional content while removing PII
+- **Configurable Protection**: Strict/Moderate/Basic protection levels
+- **Audit Trail**: Detailed logging for compliance and monitoring
+
+#### **Professional Prompt Templates**
+
+**Organized Template System:**
+
+```
+src/prompts/templates/
+├── candidate_analysis.txt    # Comprehensive candidate evaluation
+├── job_matching.txt         # Detailed job-candidate alignment
+└── summary_generation.txt   # Professional summary creation
+```
+
+**Template Features:**
+
+- **Expert Personas**: HR analyst, recruiter, consultant roles
+- **Structured Analysis**: Evidence-based evaluation frameworks
+- **Professional Tone**: Industry-appropriate language and formatting
+- **Configurable Output**: Adjustable length, detail level, and focus areas
+- **Validation System**: Required parameter checking and error handling
+
+#### **Configurable AI Parameters**
+
+**Environment-Based Configuration:**
+
+```env
+# AI Model Parameters
+OPENAI_TEMPERATURE=0.7          # Creativity vs consistency
+OPENAI_MAX_TOKENS=300           # Response length limit
+OPENAI_TOP_P=1.0               # Nucleus sampling parameter
+OPENAI_FREQUENCY_PENALTY=0.0   # Repetition reduction
+OPENAI_PRESENCE_PENALTY=0.0    # Topic diversity
+
+# Multi-Service Configuration
+COHERE_TEMPERATURE=0.6          # Cohere-specific settings
+HF_TEMPERATURE=0.8              # Hugging Face parameters
+
+# Prompt Behavior
+PROMPT_SUMMARY_LENGTH=3         # Number of sentences
+PROMPT_SUMMARY_TYPE=professional # Style: concise/detailed/professional
+PII_PROTECTION_LEVEL=strict     # Protection strictness
+
+# Security & Performance
+ENABLE_PII_PROTECTION=true      # Enable/disable PII protection
+MAX_RESUME_LENGTH=3000          # Character limits for processing
+MAX_JOB_DESC_LENGTH=2000        # Job description length limit
+ANALYSIS_TIMEOUT=30             # API call timeout (seconds)
+RETRY_ATTEMPTS=3                # Error retry count
+```
+
+#### **Advanced Features**
+
+**Intelligent Processing:**
+
+- **Automatic Fallback**: Graceful degradation when premium APIs unavailable
+- **Performance Monitoring**: Processing time tracking and optimization
+- **Error Recovery**: Comprehensive retry mechanisms with exponential backoff
+- **Batch Optimization**: Efficient handling of multiple candidates
+
+**Security & Compliance:**
+
+- **Data Minimization**: Only necessary data sent to AI services
+- **Encryption in Transit**: Secure API communications
+- **Audit Logging**: Detailed tracking for compliance requirements
+- **Risk Assessment**: Real-time evaluation of content sensitivity
+
+**Quality Assurance:**
+
+- **Template Validation**: Automatic checking of prompt structure
+- **Parameter Verification**: Configuration validation on startup
+- **Output Consistency**: Standardized response formats across all AI tiers
+- **Backward Compatibility**: Legacy method support for existing integrations
+
+#### **📊 Benefits for HR/Recruiting**
+
+**Enterprise Ready:**
+
+- **Compliance**: Meets data protection standards for candidate information
+- **Transparency**: Clear visibility into AI processing and PII handling
+- **Reliability**: Robust error handling and fallback systems
+- **Scalability**: Configurable for different organizational needs
+
+**Professional Quality:**
+
+- **Consistent Analysis**: Standardized evaluation criteria across all candidates
+- **Industry Standards**: HR-focused prompts designed by domain experts
+- **Actionable Insights**: Clear, specific recommendations for hiring decisions
+- **Audit Trail**: Complete tracking for accountability and improvement
 
 > **Note on FAISS:** FAISS benchmarks were run locally/off-cloud. The Streamlit Cloud deployment uses pure NumPy (or Annoy if enabled) for similarity to ensure compatibility. End-user experience and ranking quality are unchanged.
 
@@ -227,7 +344,7 @@ STREAMLIT_PORT=8501
 
 > **Note**: Keys are optional for the **deployed** app (it uses server-side secrets in Streamlit Cloud).  
 > For **local runs**, add your own keys via `.streamlit/secrets.toml` or `.env`.  
-> Get keys at: 
+> Get keys at:
 >
 > - OpenAI: [platform.openai.com/api-keys](https://platform.openai.com/api-keys)
 > - Cohere: [dashboard.cohere.com/api-keys](https://dashboard.cohere.com/api-keys)
@@ -388,28 +505,83 @@ lsof -i :8501
 
 ## Configuration
 
-The application uses environment variables for configuration. Key settings available in `.env`:
+The application supports comprehensive configuration via environment variables, enabling fine-tuned control over AI behavior, security settings, and performance parameters.
+
+### API Keys & Service Configuration
 
 ```env
 # API Keys (all optional - app automatically uses premium services if not provided)
 OPENAI_API_KEY=your_openai_api_key_here    # Premium tier (GPT + embeddings)
 COHERE_API_KEY=your_cohere_api_key_here    # Professional tier (Embed v3 + Command R)
 HF_API_TOKEN=your_hf_token_here            # Enhanced tier (BGE/E5/GTE models)
-
-# Application Settings (optional - sensible defaults provided)
-DEBUG=True                                 # Enable debug mode
-API_HOST=0.0.0.0                          # Host for local development
-API_PORT=8000                             # Port for API services
-STREAMLIT_HOST=0.0.0.0                    # Streamlit host
-STREAMLIT_PORT=8501                       # Streamlit port
 ```
 
-### Key Features:
+### AI Model Parameters
 
-- **Automatic Model Selection**: App intelligently chooses the best available AI service
-- **Intelligent Fallback**: Seamless switching between service tiers
-- **No Manual Configuration**: Premium experience works out-of-the-box
-- **Environment-Based Secrets**: Secure API key management via `.env` and `st.secrets`
+```env
+# OpenAI Configuration
+OPENAI_MODEL=gpt-3.5-turbo                # Model selection
+OPENAI_TEMPERATURE=0.7                    # Creativity vs consistency (0.0-2.0)
+OPENAI_MAX_TOKENS=300                     # Response length limit
+OPENAI_TOP_P=1.0                         # Nucleus sampling parameter
+OPENAI_FREQUENCY_PENALTY=0.0             # Repetition reduction
+OPENAI_PRESENCE_PENALTY=0.0              # Topic diversity
+
+# Cohere Configuration
+COHERE_MODEL=command-r                    # Cohere model selection
+COHERE_TEMPERATURE=0.6                   # Lower temperature for consistency
+COHERE_MAX_TOKENS=250                    # Token limit for Cohere
+
+# Hugging Face Configuration
+HF_MODEL=microsoft/DialoGPT-medium       # HF model selection
+HF_TEMPERATURE=0.8                       # Higher creativity for open models
+HF_MAX_TOKENS=200                        # Token limit for HF models
+```
+
+### Prompt & Security Settings
+
+```env
+# Prompt Behavior
+PROMPT_SUMMARY_LENGTH=3                   # Number of sentences in summaries
+PROMPT_SUMMARY_TYPE=professional         # Style: concise/detailed/professional
+PROMPT_INCLUDE_RISK=true                 # Include risk assessment in prompts
+PII_PROTECTION_LEVEL=strict              # Protection level: strict/moderate/basic
+
+# Security & Privacy
+ENABLE_PII_PROTECTION=true               # Enable PII detection & removal
+LOG_PII_DETECTIONS=false                 # Log detected PII for auditing
+
+# Content Limits
+MAX_INPUT_LENGTH=5000                    # Maximum total input length
+MAX_RESUME_LENGTH=3000                   # Resume text character limit
+MAX_JOB_DESC_LENGTH=2000                 # Job description character limit
+```
+
+### Performance & Reliability
+
+```env
+# Timeout & Retry Settings
+ANALYSIS_TIMEOUT=30                       # API call timeout (seconds)
+RETRY_ATTEMPTS=3                         # Number of retry attempts
+RETRY_DELAY=1.0                          # Delay between retries (seconds)
+FALLBACK_ON_ERROR=true                   # Enable automatic fallback
+
+# Application Settings
+DEBUG=True                               # Enable debug mode
+API_HOST=0.0.0.0                        # Host for local development
+API_PORT=8000                           # Port for API services
+STREAMLIT_HOST=0.0.0.0                  # Streamlit host
+STREAMLIT_PORT=8501                     # Streamlit port
+```
+
+### Configuration Features:
+
+- **Granular Control**: Fine-tune AI behavior for specific use cases
+- **Security First**: Comprehensive PII protection with configurable levels
+- **Performance Tuning**: Timeout, retry, and caching parameters
+- **Environment Flexibility**: Works with both `.env` files and cloud secrets
+- **Intelligent Defaults**: Production-ready values with override capability
+- **Validation**: Automatic checking of configuration values on startup
 
 ## How It Works
 
@@ -454,10 +626,19 @@ candidate-recommendation-engine/
 │   ├── models/
 │   │   ├── __init__.py
 │   │   └── candidate.py           # Data models (Candidate, JobDescription, SearchResult)
+│   ├── prompts/                   # 🛡️ Prompt hygiene & AI security system
+│   │   ├── __init__.py
+│   │   ├── templates/
+│   │   │   ├── candidate_analysis.txt    # Professional candidate evaluation prompts
+│   │   │   ├── job_matching.txt         # Job-candidate alignment analysis
+│   │   │   └── summary_generation.txt   # HR-focused summary generation
+│   │   ├── prompt_manager.py      # Template loading, validation, processing
+│   │   ├── pii_protection.py      # Comprehensive PII detection & removal
+│   │   └── config.py              # Configurable AI parameters & settings
 │   ├── services/
 │   │   ├── __init__.py
 │   │   ├── embedding_service.py   # UnifiedEmbeddingService (OpenAI→Cohere→HF→TF-IDF)
-│   │   ├── ai_service.py          # UnifiedAIService (OpenAI→Enhanced template analysis)
+│   │   ├── ai_service.py          # UnifiedAIService with prompt hygiene integration
 │   │   └── document_processor.py  # PDF/DOCX/TXT text extraction
 │   ├── utils/
 │   │   ├── __init__.py
@@ -472,9 +653,8 @@ candidate-recommendation-engine/
 ├── run_local.sh                   # Enhanced local launcher
 ├── stop_local.sh                  # Complete cleanup script
 ├── requirements.txt               # Cloud deployment dependencies
-├── .env.example                   # Environment variables template
+├── .env.example                   # Environment variables template (with AI config)
 ├── .env                          # Your API keys (not in git)
-├── ARCHITECTURE.md               # Detailed architecture documentation
 └── README.md                     # This comprehensive guide
 ```
 

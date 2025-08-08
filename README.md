@@ -45,16 +45,18 @@ An AI-powered web application that matches the best candidates to job descriptio
 Want to run the app on your own machine? It's easy!
 
 ### **Quick Start (One Command):**
+
 ```bash
 ./run_local.sh
 ```
 
 ### **Manual Setup:**
+
 ```bash
 # 1. Activate virtual environment
 source .venv/bin/activate
 
-# 2. Install dependencies  
+# 2. Install dependencies
 pip install -r requirements.txt
 
 # 3. Run the app
@@ -62,6 +64,7 @@ streamlit run streamlit_app.py
 ```
 
 ### **🔑 Local Benefits:**
+
 - ✅ **Uses Your API Keys**: Automatically reads from `.env` file
 - ✅ **Same Premium Experience**: Identical to cloud version
 - ✅ **Fast Development**: Test changes instantly
@@ -80,47 +83,63 @@ streamlit run streamlit_app.py
 - **Multiple Input Methods**: Upload resume files (PDF/DOCX/TXT) or paste text directly
 - **AI-Powered Insights**: Generated summaries explaining why each candidate is a great fit
 - **Interactive UI**: Modern Streamlit interface with charts, metrics, and detailed candidate analysis
-- **Production Ready**: FastAPI backend with Docker deployment, health checks, and monitoring
-- **Scalable Architecture**: Modular design with FAISS vector search and async processing
+- **Production Ready**: Clean modular architecture with comprehensive error handling
+- **Scalable Design**: Object-oriented components with separation of concerns
 
 ## Architecture
 
+### Modular Cloud-First Architecture
+
 ```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   Streamlit     │    │    FastAPI      │    │     OpenAI      │
-│   Frontend      │────│    Backend      │────│      API        │
-│                 │    │                 │    │                 │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
-                              │
-                              │
-                       ┌─────────────────┐
-                       │     FAISS       │
-                       │  Vector Index   │
-                       │                 │
-                       └─────────────────┘
+┌─────────────────────────────────────────────────────────────────┐
+│                    Streamlit Cloud App                         │
+│                     (streamlit_app.py)                         │
+└──────────────────────┬──────────────────────────────────────────┘
+                       │
+┌──────────────────────┴──────────────────────────────────────────┐
+│                  Modular Components (src/)                     │
+├─────────────────┬─────────────────┬─────────────────┬───────────┤
+│    Models       │    Services     │      Utils      │    UI     │
+│ ┌─────────────┐ │ ┌─────────────┐ │ ┌─────────────┐ │ ┌───────┐ │
+│ │ Candidate   │ │ │ Embedding   │ │ │ Similarity  │ │ │Styles │ │
+│ │JobDescription│ │ │ AI Service  │ │ │   Compute   │ │ │Display│ │
+│ │SearchResult │ │ │ Document    │ │ │ Result      │ │ │Components││
+│ └─────────────┘ │ │ Processor   │ │ │ Processor   │ │ └───────┘ │
+└─────────────────┘ └─────────────┘ └─────────────────┘ └───────────┘
+                       │
+            ┌──────────┴──────────┐
+            │   AI Service Tier   │
+            │     (Automatic)     │
+┌───────────┴───┬─────────────────┬─────────────────┬─────────────────┐
+│   OpenAI      │     Cohere      │ Hugging Face    │     TF-IDF      │
+│ (Premium)     │ (Professional)  │  (Enhanced)     │    (Basic)      │
+│ text-embed-   │   Embed v3.0    │ BGE/E5/GTE     │ Enhanced Local  │
+│ ada-002       │   Command R     │ Models         │ Processing      │
+│ GPT-3.5/4     │                 │                │                 │
+└───────────────┴─────────────────┴─────────────────┴─────────────────┘
 ```
 
 ### Tech Stack
 
-- **Frontend**: Streamlit with Plotly for interactive charts
-- **Backend**: FastAPI with async/await support
+- **Frontend**: Streamlit with Plotly for interactive charts and modern UI
+- **Architecture**: Modular OOP design with clean separation of concerns
 - **ML/AI**:
-  - **Premium**: OpenAI (embeddings + GPT)
-  - **Professional**: Cohere (Embed v3 + Command R)
-  - **Enhanced**: Hugging Face Inference API
-  - **Basic**: Enhanced TF-IDF + Local models
-- **Vector Search**: FAISS (Facebook AI Similarity Search)
-- **Document Processing**: PyPDF2, python-docx
-- **Deployment**: Docker, Docker Compose, Nginx, Streamlit Cloud
-- **Data**: In-memory vector store (easily extensible to PostgreSQL + pgvector)
+  - **Premium**: OpenAI (text-embedding-ada-002 + GPT-3.5/4)
+  - **Professional**: Cohere (Embed v3.0 + Command R)
+  - **Enhanced**: Hugging Face Inference API (BGE/E5/GTE models)
+  - **Basic**: Enhanced TF-IDF + SentenceTransformers (when available)
+- **Vector Operations**: Cosine similarity with efficient batch processing
+- **Document Processing**: PyPDF2, python-docx with robust text extraction
+- **Deployment**: Streamlit Cloud with automatic GitHub integration
+- **Configuration**: Environment-based secrets management (`st.secrets` + `.env`)
 
 ## Quick Start
 
 ### Prerequisites
 
 - Python 3.11+
-- Docker & Docker Compose (for containerized deployment)
-- **Optional**: Your own API keys (automatically uses our premium services if none provided)
+- Git (for cloning the repository)
+- **Optional**: Your own API keys (app automatically uses premium services if none provided)
 
 ### 1. Clone & Setup
 
@@ -143,7 +162,13 @@ Edit `.env` and add your API keys (optional - app works without them):
 OPENAI_API_KEY=your_openai_api_key_here    # Optional: For premium quality
 COHERE_API_KEY=your_cohere_api_key_here    # Optional: For professional quality
 HF_API_TOKEN=your_hf_token_here            # Optional: For enhanced quality
+
+# Optional settings (with defaults)
 DEBUG=True
+API_HOST=0.0.0.0
+API_PORT=8000
+STREAMLIT_HOST=0.0.0.0
+STREAMLIT_PORT=8501
 ```
 
 > **Note**: All API keys are optional! The app automatically uses our premium services if you don't provide your own keys. If you want to use your own APIs, get keys at:
@@ -201,180 +226,130 @@ Our app automatically selects the best available AI service in this priority ord
 **Option A: One-Command Launch (Recommended)**
 
 ```bash
-# Start both servers automatically
-./run.sh
+# Start the application with robust error handling
+./run_local.sh
 ```
-
-**Note**: Both local and cloud versions now use the same automatic AI hierarchy for consistent premium experience.
 
 **🛑 Stop All Services**
 
 ```bash
-./stop.sh
+./stop_local.sh
 ```
 
-** Check Status**
+**Option B: Manual Setup**
 
 ```bash
-./status.sh
-```
+# 1. Activate virtual environment
+source .venv/bin/activate
 
-**Option B: Development Script**
-
-```bash
-python scripts/dev.py
-```
-
-**Option C: Manual Setup**
-
-```bash
-# For local development (with FastAPI backend)
-pip install -r requirements_local.txt
-
-# For cloud deployment (Streamlit only)
+# 2. Install dependencies
 pip install -r requirements.txt
 
-# Terminal 1: Start API server
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
-
-# Terminal 2: Start Streamlit (local development)
-streamlit run streamlit_app_local.py --server.address 0.0.0.0 --server.port 8501
+# 3. Run the application
+streamlit run streamlit_app.py
 ```
 
-### 4. Docker Deployment
+**Option C: Custom Port**
 
 ```bash
-# One-command deployment
-./scripts/deploy.sh
-
-# Or manually
-docker-compose up -d
+# Run on specific port (e.g., 8502)
+./run_local.sh 8502
 ```
 
 ## 📍 Access Points
 
-- **Streamlit App**: http://localhost:8501
-- **API Documentation**: http://localhost:8000/docs
-- **Health Check**: http://localhost:8000/health
+- **Local App**: http://localhost:8501 (or custom port specified)
+- **Live Demo**: https://candidate-recommendation-engine-ks3gdxgzcjfto3624t55v2.streamlit.app/
 
 ## Management Scripts
 
-The application includes convenient management scripts for easy operation:
+The application includes convenient management scripts for seamless local development:
 
-### `./run.sh` - Launch Application
+### `./run_local.sh` - Enhanced Launch Script
 
-- Automatically activates virtual environment
-- Kills any processes using required ports (8000, 8501)
-- Starts both FastAPI and Streamlit servers
-- Performs health checks
-- Runs in background with process management
-- Creates log files (`api.log`, `streamlit.log`)
+- **Smart Port Management**: Automatically kills processes on busy ports
+- **Auto Environment Setup**: Creates virtual environment if missing
+- **Dependency Management**: Installs requirements automatically if needed
+- **Graceful Shutdown**: Proper cleanup on Ctrl+C
+- **Error Recovery**: Comprehensive error handling and helpful messages
+- **Alternative Port Finding**: Uses next available port if default is busy
+- **File Validation**: Checks required files exist before starting
 
-### `./stop.sh` - Stop All Services
+### `./stop_local.sh` - Complete Cleanup Script
 
-- Gracefully stops all running servers
-- Cleans up process files
-- Kills any remaining processes on required ports
-
-### `./status.sh` - Check Service Status
-
-- Shows running processes and ports
-- Performs health checks on both servers
-- Displays recent log entries
-- Shows access URLs and available commands
+- **Comprehensive Stopping**: Kills all Streamlit processes system-wide
+- **Multi-Port Cleanup**: Cleans up ports 8501-8505
+- **Force Kill Safety**: Graceful shutdown first, then force kill if needed
+- **Status Reporting**: Clear feedback on what was stopped
 
 ### Process Management
 
 ```bash
-# Start everything
-./run.sh
+# Start the application (handles everything automatically)
+./run_local.sh
 
-# Check if running
-./status.sh
+# Run on custom port
+./run_local.sh 8502
 
-# Stop everything
-./stop.sh
+# Stop all processes cleanly
+./stop_local.sh
 
-# View logs
-tail -f api.log
-tail -f streamlit.log
+# Check what's running
+lsof -i :8501
 ```
 
 ## Usage Guide
 
 ### Using the Web Interface
 
-1. **Job Description**: Enter the job title, description, and requirements
-2. **Input Method**: Choose between:
-   - **File Upload**: Upload PDF/DOCX/TXT resume files
-   - **Text Input**: Manually enter candidate information
-3. **Automatic AI Selection**: App automatically uses best available service tier
-4. **Analysis**: Click "Analyze Candidates" to get:
-   - Similarity scores (0-100%)
-   - Ranked candidate list
-   - AI-generated fit explanations
-   - Interactive charts and metrics
-   - Service tier indicator showing which AI is active
+1. **Enter Job Details**: 
+   - Job title and detailed job description
+   - Requirements and preferred qualifications
+   - Click "Continue to Upload Resumes" to proceed
 
-### API Usage
+2. **Upload Candidate Resumes**:
+   - **File Upload**: Upload multiple PDF, DOCX, or TXT resume files
+   - **Text Input**: Manually paste resume text directly
+   - Mix and match both methods as needed
 
-**Search with JSON data:**
+3. **Configure Search (Optional)**:
+   - Adjust number of top candidates to show (default: 5)
+   - Set search parameters for fine-tuning
 
-```bash
-curl -X POST "http://localhost:8000/search" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "job_description": {
-      "title": "Senior Python Developer",
-      "description": "We need an experienced Python developer...",
-      "requirements": "5+ years Python, FastAPI, ML experience"
-    },
-    "candidates": [
-      {
-        "name": "John Doe",
-        "resume_text": "Experienced Python developer with 6 years..."
-      }
-    ],
-    "top_k": 10,
-    "include_summary": true
-  }'
-```
+4. **Automatic AI Processing**: 
+   - App automatically selects best available AI service tier
+   - No configuration needed - seamless premium experience
 
-**Upload files:**
-
-```bash
-curl -X POST "http://localhost:8000/upload-search" \
-  -F "job_title=Senior Python Developer" \
-  -F "job_description=We need an experienced developer..." \
-  -F "files=@resume1.pdf" \
-  -F "files=@resume2.docx"
-```
+5. **Analyze Results**:
+   - View ranked candidates with similarity scores (0-100%)
+   - Read AI-generated fit summaries explaining why each candidate matches
+   - Explore interactive charts and detailed breakdowns
+   - See which AI tier is actively being used
 
 ## Configuration
 
-Key settings in `config.py`:
+The application uses environment variables for configuration. Key settings available in `.env`:
 
-```python
-# API Keys (all optional - app works without them)
-OPENAI_API_KEY = ""                        # Premium tier
-COHERE_API_KEY = ""                        # Professional tier
-HF_API_TOKEN = ""                          # Enhanced tier
+```env
+# API Keys (all optional - app automatically uses premium services if not provided)
+OPENAI_API_KEY=your_openai_api_key_here    # Premium tier (GPT + embeddings)
+COHERE_API_KEY=your_cohere_api_key_here    # Professional tier (Embed v3 + Command R)
+HF_API_TOKEN=your_hf_token_here            # Enhanced tier (BGE/E5/GTE models)
 
-# AI Models (automatic selection)
-EMBEDDING_MODEL = "text-embedding-ada-002"  # OpenAI embeddings
-CHAT_MODEL = "gpt-3.5-turbo"               # OpenAI summaries
-COHERE_MODEL = "embed-english-v3.0"        # Cohere embeddings
-HF_MODEL = "BAAI/bge-large-en"             # Hugging Face embeddings
-
-# Limits
-MAX_CANDIDATES = 50                         # Max candidates per request
-MAX_FILE_SIZE = 10485760                   # 10MB file limit
-VECTOR_DIMENSION = 1536                    # Default dimension (varies by service)
-
-# Performance
-RATE_LIMIT_REQUESTS = 100                  # Requests per hour
-MAX_SUMMARY_LENGTH = 200                   # AI summary max length
+# Application Settings (optional - sensible defaults provided)
+DEBUG=True                                 # Enable debug mode
+API_HOST=0.0.0.0                          # Host for local development
+API_PORT=8000                             # Port for API services  
+STREAMLIT_HOST=0.0.0.0                    # Streamlit host
+STREAMLIT_PORT=8501                       # Streamlit port
 ```
+
+### Key Features:
+
+- **Automatic Model Selection**: App intelligently chooses the best available AI service
+- **Intelligent Fallback**: Seamless switching between service tiers
+- **No Manual Configuration**: Premium experience works out-of-the-box
+- **Environment-Based Secrets**: Secure API key management via `.env` and `st.secrets`
 
 ## How It Works
 
@@ -395,10 +370,10 @@ MAX_SUMMARY_LENGTH = 200                   # AI summary max length
 
 ### 3. Similarity Computation
 
-- FAISS (Facebook AI Similarity Search) for fast vector operations
-- Cosine similarity for semantic matching
+- Efficient cosine similarity calculation with NumPy/scikit-learn
+- Semantic matching based on high-dimensional vector representations
 - Normalized scores (0-100%) with tier-appropriate adjustments
-- Consistent scoring across different embedding services
+- Consistent scoring methodology across different embedding services
 
 ### 4. AI Analysis & Summaries
 
@@ -415,48 +390,59 @@ MAX_SUMMARY_LENGTH = 200                   # AI summary max length
 
 ```
 candidate-recommendation-engine/
-├── app/
-│   ├── main.py              # FastAPI application
-│   ├── models.py            # Pydantic data models
-│   └── services/
-│       ├── embedding_service.py    # Multi-tier embeddings (OpenAI, Cohere, HF, TF-IDF)
-│       ├── vector_service.py       # FAISS similarity search
-│       ├── ai_service.py           # Multi-tier AI summaries
-│       └── document_service.py     # File processing
-├── scripts/
-│   ├── dev.py               # Development server
-│   └── deploy.sh            # Deployment script
-├── run.sh                   #  One-command launcher
-├── stop.sh                  # 🛑 Stop all services
-├── status.sh                #  Check service status
-├── streamlit_app.py         # Cloud frontend (standalone with unified services)
-├── streamlit_app_local.py   # Local frontend (FastAPI backend integration)
-├── config.py                # Multi-tier configuration
-├── requirements.txt         # Dependencies
-├── Dockerfile               # Container definition
-├── docker-compose.yml       # Multi-service setup
-└── README.md               # This file
+├── src/                           # Modular application components
+│   ├── models/
+│   │   ├── __init__.py
+│   │   └── candidate.py           # Data models (Candidate, JobDescription, SearchResult)
+│   ├── services/
+│   │   ├── __init__.py
+│   │   ├── embedding_service.py   # UnifiedEmbeddingService (OpenAI→Cohere→HF→TF-IDF)
+│   │   ├── ai_service.py          # UnifiedAIService (OpenAI→Enhanced template analysis)
+│   │   └── document_processor.py  # PDF/DOCX/TXT text extraction
+│   ├── utils/
+│   │   ├── __init__.py
+│   │   ├── similarity.py          # Cosine similarity computation
+│   │   └── result_processor.py    # Result formatting and processing
+│   └── ui/
+│       ├── __init__.py
+│       ├── styles.py              # Custom CSS and UI styling
+│       ├── components.py          # Reusable Streamlit components
+│       └── display.py             # Result display and charts
+├── streamlit_app.py               # Main application entry point
+├── run_local.sh                   # 🚀 Enhanced local launcher
+├── stop_local.sh                  # 🛑 Complete cleanup script
+├── requirements.txt               # Cloud deployment dependencies
+├── .env.example                   # Environment variables template
+├── .env                          # Your API keys (not in git)
+├── ARCHITECTURE.md               # Detailed architecture documentation
+└── README.md                     # This comprehensive guide
 ```
 
 ### Adding New Features
 
 **New Document Type:**
 
-1. Add parser in `document_service.py`
-2. Update `allowed_extensions` in config
-3. Add validation in API endpoints
+1. Add parser in `src/services/document_processor.py`
+2. Update file validation in the UI components
+3. Test with various file formats
 
-**Different Embedding Model:**
+**New AI Service Tier:**
 
-1. Update `EMBEDDING_MODEL` in config
-2. Adjust `VECTOR_DIMENSION` if needed
-3. Test compatibility with FAISS index
+1. Add new service class in `src/services/embedding_service.py`
+2. Update the service hierarchy in `_init_service_hierarchy()`
+3. Add corresponding configuration in `.env.example`
 
-**Database Storage:**
+**Enhanced UI Components:**
 
-1. Add SQLAlchemy models
-2. Replace in-memory storage in `vector_service.py`
-3. Add database migrations
+1. Create new components in `src/ui/components.py`
+2. Add styling in `src/ui/styles.py`
+3. Update display logic in `src/ui/display.py`
+
+**New Data Models:**
+
+1. Define models in `src/models/candidate.py`
+2. Update processing logic in `src/utils/result_processor.py`
+3. Update UI to handle new data structures
 
 ### Testing
 
@@ -473,82 +459,75 @@ pytest --cov=app tests/
 
 ## 🚢 Production Deployment
 
-### Environment Variables
+### Streamlit Cloud (Current)
 
-```env
-# Required
-OPENAI_API_KEY=your_api_key
+The application is already deployed on **Streamlit Community Cloud**:
+- **Live Demo**: https://candidate-recommendation-engine-ks3gdxgzcjfto3624t55v2.streamlit.app/
+- **Automatic Updates**: Syncs with GitHub repository changes
+- **Premium Features**: Uses configured API keys for best experience
+- **Zero Configuration**: Works immediately without setup
 
-# Optional (with defaults)
-DEBUG=False
-API_HOST=0.0.0.0
-API_PORT=8000
-MAX_CANDIDATES=100
-RATE_LIMIT_REQUESTS=1000
-```
+### Security Features
 
-### Scaling Considerations
-
-1. **Database**: Replace in-memory storage with PostgreSQL + pgvector
-2. **Caching**: Add Redis for embedding/summary caching
-3. **Background Jobs**: Use Celery for async processing
-4. **Load Balancing**: Multiple API instances behind nginx
-5. **Monitoring**: Prometheus + Grafana for metrics
-
-### Security
-
-- API key management via environment variables
-- Input validation and sanitization
-- File size and type restrictions
-- Rate limiting on API endpoints
-- CORS configuration for frontend access
+- **Secure API Key Management**: Uses Streamlit Cloud secrets
+- **Input Validation**: Comprehensive file and text validation
+- **File Size Restrictions**: Configurable upload limits
+- **Type Safety**: Strong typing with proper error handling
+- **Clean Architecture**: Modular design for maintainability
 
 ## Troubleshooting
 
 ### Common Issues
 
-**API Not Starting:**
+**Local App Won't Start:**
 
 ```bash
-# Check service status
-./status.sh
+# Use the enhanced launcher (handles most issues automatically)
+./run_local.sh
 
-# Check if port is in use
-lsof -i :8000
+# If port is busy, script will handle it, or try custom port
+./run_local.sh 8502
 
-# Stop all and restart
-./stop.sh
-./run.sh
+# For complete cleanup
+./stop_local.sh
 
-# Check logs
-tail -f api.log
-tail -f streamlit.log
+# Check what's running
+lsof -i :8501
 ```
 
-**OpenAI API Errors:**
+**Virtual Environment Issues:**
 
-- Verify API key is correctly set in `.env`
-- Check quota and billing in OpenAI dashboard
-- Ensure proper network connectivity
+```bash
+# Script auto-creates venv, but if manual setup needed:
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+**API Key Issues:**
+
+- For local: Add keys to `.env` file (optional - app works without them)
+- For cloud: App automatically uses premium services
+- Check `.env.example` for proper format
 
 **File Upload Issues:**
 
-- Check file size (max 10MB by default)
-- Verify file format (PDF/DOCX/TXT only)
-- Ensure proper encoding for text files
-- File upload section only appears after entering job title and description
+- Supported formats: PDF, DOCX, TXT
+- Check file size (reasonable limits apply)
+- Ensure files aren't corrupted
+- File upload appears only after entering job details
 
 **UI Issues:**
 
-- If Streamlit shows errors, refresh the browser page
-- Use incognito/private browsing to avoid cache issues
-- Check browser console for JavaScript errors
+- Refresh browser page if Streamlit shows errors
+- Clear browser cache or use incognito mode
+- Ensure JavaScript is enabled in browser
 
 **Performance Issues:**
 
-- Reduce batch size for large candidate sets
-- Consider caching for repeated queries
-- Monitor API rate limits
+- Reduce number of candidates for faster processing
+- Use file upload instead of text input for large resumes
+- App automatically uses fastest available AI tier
 
 ## Performance Metrics
 

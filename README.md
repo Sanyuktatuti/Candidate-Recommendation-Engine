@@ -6,19 +6,33 @@ An AI-powered web application that matches the best candidates to job descriptio
 
 **Access the app instantly:** https://candidate-recommendation-engine-ks3gdxgzcjfto3624t55v2.streamlit.app/
 
+**Login / Credentials:** Not required — the public demo is open.
+
+### Approach (at a glance)
+Parse → Embed → L2-normalize → Cosine similarity → Rank top-K → (Optional) AI summary
+
+### Screenshots
+_(optional but recommended for reviewers; replace with real images)_
+- ![Home](docs/screenshots/home.png)
+- ![Results](docs/screenshots/Result1.png)
+- ![Results](docs/screenshots/Result1.png)
+- ![Resume details](docs/screenshots/resume-expander1.png)- 
+- ![Resume details](docs/screenshots/resume-expander2.png)
+- ![Resume details](docs/screenshots/resume-expander3.png)
+
 ### **How to Use:**
 
 1. **Smart AI Selection:**
 
    - **Automatic Mode**: App automatically uses the best available AI service
-   - **No Setup Needed**: Premium features work instantly with our API keys
+   - **No Setup Needed (Deployed)**: The public app uses **server-side secrets (Streamlit Cloud)**; users don’t need to enter any keys
+   - **Local Runs (Optional)**: Use your own keys via `.streamlit/secrets.toml` or `.env`
    - **Intelligent Fallback**: Seamlessly switches between services for optimal performance
 
 2. **Enter Job Details:**
 
    - Job title and detailed job description
    - Requirements and preferred skills
-
 3. **Upload Resumes:**
 
    - Upload multiple PDF, DOCX, or TXT files
@@ -118,6 +132,15 @@ streamlit run streamlit_app.py
 │ GPT-3.5/4     │                 │                │                 │
 └───────────────┴─────────────────┴─────────────────┴─────────────────┘
 ```
+## Assumptions & Limitations
+
+- **Supported inputs:** PDF, DOCX, TXT resumes; JD via text input
+- **File size:** Default limit ~10 MB per file (configurable)
+- **Identity:** Candidate “Name/ID” is taken from filename (uploads) or the name field (text mode)
+- **Language:** Optimized for English; other languages depend on the active embedding tier
+- **Similarity scores:** True cosine similarity on L2-normalized vectors (0–1 → shown as 0–100%)
+- **Privacy:** Files are processed in memory during a session; no server-side storage or logging of resume content
+- **Cloud differences:** On Streamlit Cloud we avoid native deps like FAISS; we use NumPy (or Annoy, if enabled)
 
 ### Tech Stack
 
@@ -132,6 +155,8 @@ streamlit run streamlit_app.py
 - **Document Processing**: PyPDF2, python-docx with robust text extraction
 - **Deployment**: Streamlit Cloud with automatic GitHub integration
 - **Configuration**: Environment-based secrets management (`st.secrets` + `.env`)
+
+> **Note on FAISS:** FAISS benchmarks were run locally/off-cloud. The Streamlit Cloud deployment uses pure NumPy (or Annoy if enabled) for similarity to ensure compatibility. End-user experience and ranking quality are unchanged.
 
 ## Quick Start
 
@@ -171,7 +196,9 @@ STREAMLIT_HOST=0.0.0.0
 STREAMLIT_PORT=8501
 ```
 
-> **Note**: All API keys are optional! The app automatically uses our premium services if you don't provide your own keys. If you want to use your own APIs, get keys at:
+> **Note**: Keys are optional for the **deployed** app (it uses server-side secrets in Streamlit Cloud).  
+> For **local runs**, add your own keys via `.streamlit/secrets.toml` or `.env`.  
+> Get keys at: 
 >
 > - OpenAI: [platform.openai.com/api-keys](https://platform.openai.com/api-keys)
 > - Cohere: [dashboard.cohere.com/api-keys](https://dashboard.cohere.com/api-keys)

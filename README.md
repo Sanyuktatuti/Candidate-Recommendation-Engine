@@ -13,6 +13,8 @@ Parse → Embed → L2-normalize → Cosine similarity → Rank top-K → (Optio
 
 ### Screenshots
 - ![Home](docs/screenshots/home.png)
+*Figure 1: Home — Job Description input and resume uploader.*
+
 - ![Results](docs/screenshots/Result1.png)
 - ![Results](docs/screenshots/Result1.png)
 - ![Resume details](docs/screenshots/resume-expander1.png)- 

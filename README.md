@@ -19,12 +19,35 @@ Parse → Embed → L2-normalize → Cosine similarity → Rank top-K → (Optio
   <em>Figure 1: Home — Job Description input and resume uploader.</em>
 </p>
 
+<p align="center">
+  <img src="docs/screenshots/Result1.png" alt="Result1" width="900">
+  <br>
+  <em>Figure 2: Result — Job Description input.</em>
+</p>
 
-- ![Results](docs/screenshots/Result1.png)
-- ![Results](docs/screenshots/Result1.png)
-- ![Resume details](docs/screenshots/resume-expander1.png)- 
-- ![Resume details](docs/screenshots/resume-expander2.png)
-- ![Resume details](docs/screenshots/resume-expander3.png)
+<p align="center">
+  <img src="docs/screenshots/Result2.png" alt="Result2" width="900">
+  <br>
+  <em>Figure 3: Result — Upload Resume.</em>
+</p>
+
+<p align="center">
+  <img src="docs/screenshots/resume-expander1.png" alt="resume-expander1" width="900">
+  <br>
+  <em>Figure 4: Resume-expander.</em>
+</p>
+
+<p align="center">
+  <img src="docs/screenshots/resume-expander2.png" alt="resume-expander2" width="900">
+  <br>
+  <em>Figure 5: Resume-expander Similarity Scores Detailed.</em>
+</p>
+
+<p align="center">
+  <img src="docs/screenshots/resume-expander3.png" alt="resume-expander3" width="900">
+  <br>
+  <em>Figure 6: Resume-expander.</em>
+</p>
 
 ### **How to Use:**
 

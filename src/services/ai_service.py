@@ -130,9 +130,11 @@ class UnifiedAIService:
                 result = self._generate_openai_summary_with_hygiene(
                     job_description, resume_text, candidate_name, summary_type
                 )
-                result['service_used'] = 'openai'
-                result['processing_time'] = time.time() - start_time
-                return result
+                if result.get('success'):
+                    result['service_used'] = 'openai'
+                    result['processing_time'] = time.time() - start_time
+                    return result
+                print(f"OpenAI analysis failed: {result.get('error')}")
             except Exception as e:
                 # Log error and fallback
                 print(f"OpenAI analysis failed: {e}")
@@ -143,9 +145,11 @@ class UnifiedAIService:
                 result = self._generate_openrouter_summary_with_hygiene(
                     job_description, resume_text, candidate_name, summary_type
                 )
-                result['service_used'] = 'openrouter'
-                result['processing_time'] = time.time() - start_time
-                return result
+                if result.get('success'):
+                    result['service_used'] = 'openrouter'
+                    result['processing_time'] = time.time() - start_time
+                    return result
+                print(f"OpenRouter analysis failed: {result.get('error')}")
             except Exception as e:
                 print(f"OpenRouter analysis failed: {e}")
 

@@ -60,13 +60,6 @@ class CandidateRecommendationApp:
         # Render sidebar settings
         method, top_k, include_summary = self.ui_components.render_sidebar_settings()
 
-        # TEMPORARY DEBUG — remove after diagnosing OpenRouter key detection
-        st.sidebar.caption(
-            f"debug: openai_key={bool(self.ai_service.openai_api_key)} "
-            f"openrouter_key={bool(self.ai_service.openrouter_api_key)} "
-            f"openrouter_client={self.ai_service.openrouter_client is not None}"
-        )
-
         # Job description form
         job, job_complete = self.ui_components.render_job_description_form()
         

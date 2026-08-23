@@ -90,7 +90,18 @@ class UnifiedAIService:
                 self.openrouter_api_key = st.secrets.get("OPENROUTER_API_KEY", "")
             except Exception:
                 self.openrouter_api_key = ""
-        self.openrouter_model = os.getenv("OPENROUTER_MODEL", "openrouter/free")
+        # Comma-separated list of free OpenRouter models to try in order. Free-tier
+        # models share upstream rate limits, so any single one can be temporarily
+        # saturated — trying several in sequence makes the fallback far more reliable.
+        default_models = (
+            "openrouter/free,"
+            "nvidia/nemotron-3-nano-30b-a3b:free,"
+            "google/gemma-4-31b-it:free,"
+            "nvidia/nemotron-3-super-120b-a12b:free,"
+            "z-ai/glm-5.2:free"
+        )
+        models_raw = os.getenv("OPENROUTER_MODEL", default_models)
+        self.openrouter_models = [m.strip() for m in models_raw.split(",") if m.strip()]
 
         self.job_domains = {
             'data': ['data', 'analytics', 'scientist', 'analysis', 'statistics', 'research'],
@@ -258,36 +269,50 @@ class UnifiedAIService:
             # Reuse the same configured parameters as the OpenAI tier
             openai_params = self.config.get_openai_params()
 
-            # Make OpenRouter API call (OpenAI-compatible) with configured parameters
-            response = self.openrouter_client.chat.completions.create(
-                model=self.openrouter_model,
-                messages=[
-                    {"role": "system", "content": "You are an expert HR analyst specializing in candidate evaluation."},
-                    {"role": "user", "content": prompt_result['prompt']}
-                ],
-                temperature=openai_params['temperature'],
-                max_tokens=openai_params['max_tokens'],
-                top_p=openai_params['top_p'],
-                frequency_penalty=openai_params['frequency_penalty'],
-                presence_penalty=openai_params['presence_penalty'],
-                extra_headers={
-                    "HTTP-Referer": "https://candidate-recommendation-engine-ks3gdxgzcjfto3624t55v2.streamlit.app/",
-                    "X-Title": "Candidate Recommendation Engine"
-                }
-            )
+            # Try each configured free model in order — free-tier models share
+            # upstream rate limits, so one being saturated shouldn't sink the tier.
+            last_error = "No OpenRouter models configured"
+            for model_slug in self.openrouter_models:
+                try:
+                    response = self.openrouter_client.chat.completions.create(
+                        model=model_slug,
+                        messages=[
+                            {"role": "system", "content": "You are an expert HR analyst specializing in candidate evaluation."},
+                            {"role": "user", "content": prompt_result['prompt']}
+                        ],
+                        temperature=openai_params['temperature'],
+                        max_tokens=openai_params['max_tokens'],
+                        top_p=openai_params['top_p'],
+                        frequency_penalty=openai_params['frequency_penalty'],
+                        presence_penalty=openai_params['presence_penalty'],
+                        extra_headers={
+                            "HTTP-Referer": "https://candidate-recommendation-engine-ks3gdxgzcjfto3624t55v2.streamlit.app/",
+                            "X-Title": "Candidate Recommendation Engine"
+                        }
+                    )
 
-            summary = response.choices[0].message.content.strip()
+                    summary = response.choices[0].message.content.strip()
+
+                    return {
+                        'success': True,
+                        'summary': summary,
+                        'candidate_name': candidate_name,
+                        'pii_detection': prompt_result['pii_detection'],
+                        'metadata': {
+                            **prompt_result['metadata'],
+                            'openrouter_model': model_slug,
+                            'tokens_used': response.usage.total_tokens if hasattr(response, 'usage') else None
+                        }
+                    }
+                except Exception as e:
+                    last_error = str(e)
+                    continue
 
             return {
-                'success': True,
-                'summary': summary,
+                'success': False,
+                'error': f"OpenRouter API error (all models failed): {last_error}",
                 'candidate_name': candidate_name,
-                'pii_detection': prompt_result['pii_detection'],
-                'metadata': {
-                    **prompt_result['metadata'],
-                    'openrouter_model': self.openrouter_model,
-                    'tokens_used': response.usage.total_tokens if hasattr(response, 'usage') else None
-                }
+                'fallback_attempted': True
             }
 
         except Exception as e:

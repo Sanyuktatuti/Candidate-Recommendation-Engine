@@ -8,6 +8,16 @@ An AI-powered web application that matches the best candidates to job descriptio
 
 **Login / Credentials:** Not required — the public demo is open.
 
+### Demo
+
+<p align="center">
+  <img src="docs/demo/demo.gif" alt="Demo walkthrough" width="900">
+  <br>
+  <em>Filling in a job description, uploading resumes, and reviewing ranked candidates with AI-generated fit summaries and similarity scores.</em>
+</p>
+
+Want to try it yourself? A sample [job description](docs/demo/job_description_senior_fullstack_engineer.txt) and four [resumes](docs/demo/resumes/) with intentionally varied fit are included — see [docs/demo/README.md](docs/demo/README.md) for details.
+
 ### Approach (at a glance)
 
 Parse → Embed → L2-normalize → Cosine similarity → Rank top-K → (Optional) AI summary

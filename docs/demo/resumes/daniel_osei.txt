@@ -1,0 +1,23 @@
+Daniel Osei
+Data Engineer
+
+Summary
+Data engineer with 6 years of experience building batch and streaming data pipelines. Minimal web application development experience.
+
+Experience
+Data Engineer — Northwind Analytics (2020 - Present)
+- Built Airflow pipelines orchestrating nightly ETL jobs across Snowflake and S3
+- Developed Spark jobs in Scala and PySpark for large-scale log processing
+- Maintained Kafka-based streaming pipelines for real-time event ingestion
+- Wrote SQL-based data quality checks and dashboards in Looker
+
+Data Analyst — GreenLeaf Retail (2017 - 2020)
+- Built reporting pipelines in Python (pandas) for sales and inventory analysis
+- Automated recurring reports using cron and shell scripting
+- Created dashboards in Tableau for the merchandising team
+
+Skills
+Python, PySpark, Scala, Airflow, Kafka, Snowflake, SQL, Tableau, Looker, AWS S3
+
+Education
+M.S. Data Science, University of Michigan

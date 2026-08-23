@@ -1,0 +1,23 @@
+Priya Nair
+Frontend-Leaning Full-Stack Developer
+
+Summary
+Frontend-focused developer with 5 years of experience building React/TypeScript applications and Node.js APIs. Comfortable working across the stack but strongest on the client side.
+
+Experience
+Frontend Engineer — Loopwave Media (2020 - Present)
+- Built and maintained a large React + TypeScript single-page application used by 500K monthly users
+- Developed Node.js/Express APIs for internal tooling, backed by MongoDB
+- Set up component testing with Jest and React Testing Library
+- Collaborated with designers to implement a shared component library
+
+Web Developer — Studio Karo (2018 - 2020)
+- Delivered marketing sites and dashboards using React and REST APIs
+- Wrote lightweight Python scripts for data cleanup and reporting automation
+- Deployed static sites via Netlify and Vercel
+
+Skills
+React, TypeScript, JavaScript, Node.js, Express, MongoDB, HTML/CSS, Jest, basic Python, REST APIs
+
+Education
+B.A. Information Systems, San Jose State University

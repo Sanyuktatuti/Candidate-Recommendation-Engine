@@ -1,0 +1,23 @@
+Aisha Khan
+Senior Software Engineer
+
+Summary
+Full-stack engineer with 7 years of experience building and scaling web applications with Python and React. Proven track record owning features end-to-end, from API design to production deployment, and mentoring junior engineers.
+
+Experience
+Senior Software Engineer — Brightline Labs (2021 - Present)
+- Designed and built RESTful APIs in FastAPI serving 2M+ requests/day, backed by PostgreSQL and Redis
+- Led migration of the legacy frontend to React + TypeScript, improving page load times by 40%
+- Introduced CI/CD pipelines with GitHub Actions and Docker, cutting deployment time from 45 to 8 minutes
+- Mentored three junior engineers and ran the team's code review guild
+
+Software Engineer — Nimbus Software (2018 - 2021)
+- Built customer-facing dashboards in React consuming Django REST Framework APIs
+- Containerized services with Docker and deployed to AWS ECS
+- Wrote unit and integration tests, raising backend test coverage from 55% to 90%
+
+Skills
+Python, FastAPI, Django, React, TypeScript, PostgreSQL, Redis, Docker, AWS, GraphQL, CI/CD, REST API design
+
+Education
+B.S. Computer Science, University of Washington

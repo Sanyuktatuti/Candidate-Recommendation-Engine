@@ -1,0 +1,23 @@
+Marco Rossi
+Backend Software Engineer
+
+Summary
+Backend-focused engineer with 6 years of experience building Python services and data-heavy APIs. Limited but functional exposure to frontend frameworks.
+
+Experience
+Backend Engineer — Ferrovia Systems (2019 - Present)
+- Built and maintained Django REST Framework services backing a logistics platform
+- Optimized PostgreSQL queries and added Redis caching, reducing p95 latency by 60%
+- Wrote Celery-based background jobs for batch processing and email notifications
+- Occasionally patched small bugs in the team's Vue.js admin panel
+
+Software Engineer — DataForge (2017 - 2019)
+- Developed internal Python tooling and ETL scripts for reporting
+- Contributed to a Flask-based internal API used by the analytics team
+- Deployed services with Docker on on-premise servers
+
+Skills
+Python, Django, Flask, PostgreSQL, Redis, Celery, Docker, basic Vue.js, SQL, Linux
+
+Education
+B.S. Computer Engineering, Politecnico di Milano

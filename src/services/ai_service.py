@@ -90,7 +90,7 @@ class UnifiedAIService:
                 self.openrouter_api_key = st.secrets.get("OPENROUTER_API_KEY", "")
             except Exception:
                 self.openrouter_api_key = ""
-        self.openrouter_model = os.getenv("OPENROUTER_MODEL", "google/gemma-4-31b-it:free")
+        self.openrouter_model = os.getenv("OPENROUTER_MODEL", "openrouter/free")
 
         self.job_domains = {
             'data': ['data', 'analytics', 'scientist', 'analysis', 'statistics', 'research'],

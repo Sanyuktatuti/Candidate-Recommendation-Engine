@@ -57,6 +57,18 @@ class UnifiedAIService:
             except Exception as e:
                 print(f"Warning: Failed to initialize OpenAI client: {e}")
                 self.openai_client = None
+
+        # OpenRouter client: OpenAI-compatible API, pointed at OpenRouter's base_url
+        self.openrouter_client = None
+        if self.openrouter_api_key and openai:
+            try:
+                self.openrouter_client = openai.OpenAI(
+                    api_key=self.openrouter_api_key,
+                    base_url="https://openrouter.ai/api/v1"
+                )
+            except Exception as e:
+                print(f"Warning: Failed to initialize OpenRouter client: {e}")
+                self.openrouter_client = None
     
     def _load_api_keys(self) -> None:
         """Load API keys with priority: environment variables → Streamlit secrets."""
@@ -70,7 +82,16 @@ class UnifiedAIService:
             except Exception:
                 # No secrets available, use empty string (will fallback to enhanced analysis)
                 self.openai_api_key = ""
-        
+
+        # OpenRouter: same priority pattern, used as a fallback before template analysis
+        self.openrouter_api_key = os.getenv("OPENROUTER_API_KEY", "")
+        if not self.openrouter_api_key:
+            try:
+                self.openrouter_api_key = st.secrets.get("OPENROUTER_API_KEY", "")
+            except Exception:
+                self.openrouter_api_key = ""
+        self.openrouter_model = os.getenv("OPENROUTER_MODEL", "google/gemma-4-31b-it:free")
+
         self.job_domains = {
             'data': ['data', 'analytics', 'scientist', 'analysis', 'statistics', 'research'],
             'engineering': ['software', 'engineer', 'developer', 'programming', 'coding', 'technical'],
@@ -115,7 +136,19 @@ class UnifiedAIService:
             except Exception as e:
                 # Log error and fallback
                 print(f"OpenAI analysis failed: {e}")
-        
+
+        # Use OpenRouter if available, otherwise fallback to enhanced analysis
+        if self.openrouter_client:
+            try:
+                result = self._generate_openrouter_summary_with_hygiene(
+                    job_description, resume_text, candidate_name, summary_type
+                )
+                result['service_used'] = 'openrouter'
+                result['processing_time'] = time.time() - start_time
+                return result
+            except Exception as e:
+                print(f"OpenRouter analysis failed: {e}")
+
         # Fallback to enhanced analysis with prompt hygiene
         result = self._generate_enhanced_summary_with_hygiene(
             job_description, resume_text, candidate_name, summary_type
@@ -195,6 +228,72 @@ class UnifiedAIService:
                 'fallback_attempted': True
             }
     
+    def _generate_openrouter_summary_with_hygiene(
+        self,
+        job_description: str,
+        resume_text: str,
+        candidate_name: str,
+        summary_type: str = None
+    ) -> Dict[str, Any]:
+        """Generate OpenRouter summary with prompt hygiene and PII protection."""
+        try:
+            # Generate prompt using prompt manager with PII protection
+            prompt_result = self.prompt_manager.generate_summary(
+                job_description=job_description,
+                resume_text=resume_text,
+                summary_type=summary_type or 'professional'
+            )
+
+            if not prompt_result['success']:
+                return {
+                    'success': False,
+                    'error': prompt_result.get('error', 'Failed to generate prompt'),
+                    'service_used': 'openrouter'
+                }
+
+            # Reuse the same configured parameters as the OpenAI tier
+            openai_params = self.config.get_openai_params()
+
+            # Make OpenRouter API call (OpenAI-compatible) with configured parameters
+            response = self.openrouter_client.chat.completions.create(
+                model=self.openrouter_model,
+                messages=[
+                    {"role": "system", "content": "You are an expert HR analyst specializing in candidate evaluation."},
+                    {"role": "user", "content": prompt_result['prompt']}
+                ],
+                temperature=openai_params['temperature'],
+                max_tokens=openai_params['max_tokens'],
+                top_p=openai_params['top_p'],
+                frequency_penalty=openai_params['frequency_penalty'],
+                presence_penalty=openai_params['presence_penalty'],
+                extra_headers={
+                    "HTTP-Referer": "https://candidate-recommendation-engine-ks3gdxgzcjfto3624t55v2.streamlit.app/",
+                    "X-Title": "Candidate Recommendation Engine"
+                }
+            )
+
+            summary = response.choices[0].message.content.strip()
+
+            return {
+                'success': True,
+                'summary': summary,
+                'candidate_name': candidate_name,
+                'pii_detection': prompt_result['pii_detection'],
+                'metadata': {
+                    **prompt_result['metadata'],
+                    'openrouter_model': self.openrouter_model,
+                    'tokens_used': response.usage.total_tokens if hasattr(response, 'usage') else None
+                }
+            }
+
+        except Exception as e:
+            return {
+                'success': False,
+                'error': f"OpenRouter API error: {str(e)}",
+                'candidate_name': candidate_name,
+                'fallback_attempted': True
+            }
+
     def _generate_enhanced_summary_with_hygiene(
         self, 
         job_description: str, 

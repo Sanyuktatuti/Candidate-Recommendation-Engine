@@ -63,7 +63,7 @@ class CandidateRecommendationApp:
         # TEMPORARY DEBUG — remove after diagnosing OpenRouter call failures
         if st.sidebar.button("Debug: test AI summary call"):
             import re
-            result = self.ai_service.generate_fit_summary(
+            result = self.ai_service._generate_openrouter_summary_with_hygiene(
                 "Senior Python Engineer with React experience.",
                 "5 years Python, Django, React.",
                 "Test Candidate"
@@ -71,6 +71,7 @@ class CandidateRecommendationApp:
             safe = {k: v for k, v in result.items() if k != 'summary'}
             safe_str = re.sub(r'sk-[A-Za-z0-9_-]+', '[REDACTED]', str(safe))
             st.sidebar.code(safe_str)
+            st.sidebar.write("client is None:", self.ai_service.openrouter_client is None)
 
         # Job description form
         job, job_complete = self.ui_components.render_job_description_form()
